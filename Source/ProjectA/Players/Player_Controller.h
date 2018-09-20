@@ -59,6 +59,12 @@ private :
 	UFUNCTION()
 	void _Interact();
 
+	UFUNCTION()
+	void _Jump();
+
+	UFUNCTION()
+	void _Attack();
+
 	//
 	// #. Input Axis Functions.
 	//

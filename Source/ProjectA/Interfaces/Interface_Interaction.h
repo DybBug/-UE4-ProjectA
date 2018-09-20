@@ -25,12 +25,11 @@ class PROJECTA_API IInterface_Interaction
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 protected :
 	APlayer_Character* m_pPlayer;
-	bool m_bBeInteracting;
 
 public:
 	virtual void OnInteract(APlayer_Character* _pPlayer) = 0;
 	virtual void UnInteract() = 0;
 
 	/* Get */
-	FORCEINLINE const bool& GetBeInteraction() const { return m_bBeInteracting; }
+	FORCEINLINE APlayer_Character* const& GetPlayer() const { return m_pPlayer; }
 };

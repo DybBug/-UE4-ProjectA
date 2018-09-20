@@ -204,7 +204,7 @@ bool UComponent_Equipment::_EquipEarring(AItem_Equipment* _pEquipment)
 {
 	_UnEquipEarring();
 
-	if (m_RingIndex == 0)
+	if (m_EarringIndex == 0)
 	{
 		_EquipEarring_L(_pEquipment);
 	}
@@ -425,9 +425,10 @@ bool UComponent_Equipment::_UnEquipEarring_L()
 
 bool UComponent_Equipment::_EquipEarring_R(AItem_Equipment* _pEquipment)
 {	
-	_UpdatePlayerStats(m_EarringSlots[1].pItem, true);
 	m_EarringSlots[1].pItem = _pEquipment;
 	m_EarringSlots[1].pSlotWidget->Show();
+	_UpdatePlayerStats(m_EarringSlots[1].pItem, true);
+
 	return true;
 }
 

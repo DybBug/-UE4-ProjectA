@@ -14,6 +14,7 @@ class UComponent_Inventory;
 class UComponent_Equipment;
 class UComponent_Stat;
 class UComponent_Crafting;
+class UComponent_Skill;
 
 enum class EStat_Types :uint8;
 
@@ -56,17 +57,32 @@ protected :
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UComponent_Crafting* m_pCrafting;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UComponent_Skill* m_pSkill;
+
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TSubclassOf<UWidget_Main> m_MainWidgetClass;
 
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	AActor* m_pTarget;
 
+	UPROPERTY(VisibleAnywhere, Category = "Configuration")
+	bool m_bIsLockOn;
+
 	UWidget_Main* m_pMainWidget;
+
+	FRotator m_TempCameraRot;
+
+	// #. ≈∏¿Ã∏”.
+	FTimerHandle m_hLockOnTimer;
 
 public :
 	void MoveForward(float _Value);
 	void MoveRight(float _Value);
+
+	void Attack();
+	void LockOn(AActor* _pTarget);
+	void LockOff();
 
 	void InventoryOpenAndClose();
 	void EquipmentOpenAndClose();
@@ -83,14 +99,15 @@ public :
 	bool GainExperience(float _Value);
 
 	/* Get */
-	FORCEINLINE UCameraComponent* const& GetCamera() const { return m_pCamera; }
-
+	FORCEINLINE UCameraComponent*     const& GetCamera()     const { return m_pCamera; }
 	FORCEINLINE UComponent_Inventory* const& GetInventory()  const { return m_pInventory; }
 	FORCEINLINE UComponent_Equipment* const& GetEquipment()  const { return m_pEquipment; }
 	FORCEINLINE UComponent_Stat*      const& GetStat()       const { return m_pStat; }
 	FORCEINLINE UComponent_Crafting*  const& GetCrafting()   const { return m_pCrafting; }
 	FORCEINLINE UWidget_Main*         const& GetMainWidget() const { return m_pMainWidget; }
 	FORCEINLINE AActor*               const& GetTarget()     const { return m_pTarget; }
+
+	FORCEINLINE const bool& GetIsLockOn() const { return m_bIsLockOn; }
 
 	/* Set */
 	FORCEINLINE void SetTarget(AActor* _pTarget) { m_pTarget = _pTarget; }
@@ -99,5 +116,8 @@ public :
 private :
 	UFUNCTION()
 	void _DecreaseHealth();
+
+	UFUNCTION()
+	void _LookAtTarget();
 	
 };

@@ -2,6 +2,7 @@
 
 #include "Player_Controller.h"
 #include "Player_Character.h"
+#include "Enemies/Enemy_Base.h"
 #include "Interfaces/Interface_Interaction.h"
 
 #include <WidgetBlueprintLibrary.h>
@@ -33,6 +34,8 @@ void APlayer_Controller::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Stat_OpenAndClose"), IE_Pressed, this, &APlayer_Controller::_Stat_OpenAndClose);
 	InputComponent->BindAction(TEXT("Crafting_OpenAndClose"), IE_Pressed, this, &APlayer_Controller::_Crafting_OpenAndClose);
 	InputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &APlayer_Controller::_Interact);
+	InputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &APlayer_Controller::_Jump);
+	InputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &APlayer_Controller::_Attack);
 
 	InputComponent->BindAxis(TEXT("MoveForward"), this, &APlayer_Controller::_MoveForward);
 	InputComponent->BindAxis(TEXT("MoveRight"), this, &APlayer_Controller::_MoveRight);
@@ -96,10 +99,32 @@ void APlayer_Controller::_Interact()
 
 	if (GetWorld()->LineTraceSingleByChannel(Result, Start, End, ECollisionChannel::ECC_Visibility))
 	{
+		// #. 상호작용이 가능한 액터일 경우.
 		if (IInterface_Interaction* pInteract = Cast<IInterface_Interaction>(Result.GetActor()))
 		{
-			pInteract->GetBeInteraction() ? pInteract->UnInteract() : pInteract->OnInteract(m_pPlayer);
-		}
+			pInteract->GetPlayer() ? pInteract->UnInteract() : pInteract->OnInteract(m_pPlayer);
+			return;
+		}	
+	}
+
+	if (m_pPlayer->GetTarget())
+	{
+		IInterface_Interaction* pInteract = Cast<IInterface_Interaction>(m_pPlayer->GetTarget());
+		pInteract->UnInteract();
+		return;
+	}
+}
+
+void APlayer_Controller::_Jump()
+{
+	m_pPlayer->Jump();
+}
+
+void APlayer_Controller::_Attack()
+{
+	if (m_pPlayer->GetIsLockOn())
+	{
+		m_pPlayer->Attack();
 	}
 }
 
@@ -124,8 +149,9 @@ void APlayer_Controller::_LookUp(float _Value)
 	if (_Value != 0.f)
 	{
 		FRotator CurrControlRot = GetControlRotation();
-		CurrControlRot.Pitch = FMath::ClampAngle(CurrControlRot.Pitch + _Value, -40.f, 40.f);
-		SetControlRotation(CurrControlRot);
+		_Value = FMath::ClampAngle(CurrControlRot.Pitch + _Value, -40.f, 40.f);
+		_Value -= CurrControlRot.Pitch;
+		AddPitchInput(_Value);
 		return;
 	}
 }

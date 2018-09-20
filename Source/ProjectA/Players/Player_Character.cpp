@@ -7,10 +7,13 @@
 #include "Components/Component_Equipment.h"
 #include "Components/Component_Stat.h"
 #include "Components/Component_Crafting.h"
+#include "Components/Component_Skill.h"
+#include "Items/Item_Equipment.h"
 
 #include <GameFramework/SpringArmComponent.h>
 #include <GameFramework/PlayerController.h>
 #include <Camera/CameraComponent.h>
+#include <TimerManager.h>
 #include <Engine.h>
 
 // Sets default values
@@ -28,6 +31,10 @@ APlayer_Character::APlayer_Character()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(UEngineTypes::ConvertToCollisionChannel(OTQ_Equipment), ECollisionResponse::ECR_Ignore);
 
 	m_pSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	m_pSpringArm->bUsePawnControlRotation = true;
+	m_pSpringArm->bInheritPitch = true;
+	m_pSpringArm->bInheritYaw = true;
+	m_pSpringArm->bInheritRoll = false;
 	m_pSpringArm->SetupAttachment(RootComponent);
 
 	m_pCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -37,6 +44,7 @@ APlayer_Character::APlayer_Character()
 	m_pEquipment = CreateDefaultSubobject<UComponent_Equipment>(TEXT("Equipment"));
 	m_pStat      = CreateDefaultSubobject<UComponent_Stat>(TEXT("Stat"));
 	m_pCrafting  = CreateDefaultSubobject<UComponent_Crafting>(TEXT("Crafting"));
+	m_pSkill     = CreateDefaultSubobject<UComponent_Skill>(TEXT("Skill"));
 }
 
 // Called when the game starts or when spawned
@@ -83,11 +91,59 @@ void APlayer_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void APlayer_Character::MoveForward(float _Value)
 {
 	AddMovementInput(GetActorForwardVector(), _Value);
+
 }
 
 void APlayer_Character::MoveRight(float _Value)
 {
 	AddMovementInput(GetActorRightVector(), _Value);
+}
+
+void APlayer_Character::Attack()
+{
+	if (m_pEquipment->GetWeaponSlot().pItem)
+	{
+		m_pSkill->UseSkill();
+	}
+}
+
+void APlayer_Character::LockOn(AActor* _pTarget)
+{
+	if (m_pTarget != _pTarget)
+	{
+		m_pTarget = _pTarget;
+		m_bIsLockOn = true;
+
+		GetWorld()->GetTimerManager().SetTimer(m_hLockOnTimer, this, &APlayer_Character::_LookAtTarget, 0.005f, true);
+
+		GetWorld()->GetFirstPlayerController()->InputYawScale = 0.f;
+		GetWorld()->GetFirstPlayerController()->InputPitchScale = 0.f;
+
+		m_pSpringArm->bInheritPitch = false;
+		m_pCamera->bUsePawnControlRotation = true;
+
+		m_TempCameraRot = m_pCamera->GetRelativeTransform().GetRotation().Rotator();
+		UE_LOG(LogClass, Warning, TEXT("%f, %f, %f"), m_TempCameraRot.Pitch, m_TempCameraRot.Yaw, m_TempCameraRot.Roll);
+	}
+}
+
+void APlayer_Character::LockOff()
+{
+	if (m_pTarget)
+	{
+		m_pTarget = nullptr;
+		m_bIsLockOn = false;
+
+		GetWorld()->GetTimerManager().ClearTimer(m_hLockOnTimer);
+
+		GetWorld()->GetFirstPlayerController()->InputYawScale = 1.f;
+		GetWorld()->GetFirstPlayerController()->InputPitchScale = 1.f;
+
+		m_pSpringArm->bInheritPitch = true;
+		m_pCamera->bUsePawnControlRotation = false;
+
+		m_pCamera->SetRelativeRotation(m_TempCameraRot);
+	}
 }
 
 void APlayer_Character::InventoryOpenAndClose()
@@ -257,7 +313,28 @@ void APlayer_Character::_DecreaseHealth()
 	if (ExpInfo.CurrentValue >= ExpInfo.MaxValue)
 	{
 		LevelUp();
+	}	
+}
+
+void APlayer_Character::_LookAtTarget()
+{
+	FVector CameraLocation = m_pCamera->GetComponentLocation();
+	FVector TargetLocation = m_pTarget->GetActorLocation();
+
+	FVector Direction = (TargetLocation - CameraLocation);
+
+	float YawAngle = FMath::RadiansToDegrees(FMath::Atan2(Direction.Y, Direction.X));
+	float PitchAngle = GetControlRotation().Pitch;
+
+	if (Direction.Size() != 0.f)
+	{
+		PitchAngle = FMath::RadiansToDegrees(FMath::Asin(Direction.Z / Direction.Size()));
 	}
-	
+
+	FRotator ControlRot = GetControlRotation();
+
+	ControlRot.Yaw = YawAngle;
+	ControlRot.Pitch = PitchAngle;
+	GetController()->SetControlRotation(ControlRot);
 }
 

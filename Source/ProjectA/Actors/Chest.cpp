@@ -42,10 +42,14 @@ void AChest::BeginPlay()
 
 void AChest::OnInteract(APlayer_Character* _pPlayer)
 {
+	if (_pPlayer->GetTarget() && _pPlayer->GetTarget() != this)
+	{
+		Cast<IInterface_Interaction>(_pPlayer->GetTarget())->UnInteract();
+	}
+
 	if (!m_pPickup->GetIsOpen())
 	{
 		m_pPlayer = _pPlayer;
-		m_bBeInteracting = true;
 
 		if (m_pPlayer->GetTarget() && (m_pPlayer->GetTarget() != this))
 		{
@@ -64,7 +68,6 @@ void AChest::UnInteract()
 {
 	if (m_pPickup->GetIsOpen())
 	{
-		m_bBeInteracting = false;
 		m_pPlayer->SetTarget(nullptr);
 		m_pPlayer = nullptr;
 		m_pPickup->Close();

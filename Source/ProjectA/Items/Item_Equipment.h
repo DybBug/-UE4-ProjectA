@@ -12,6 +12,7 @@
  */
 class UArrowComponent;
 class UStaticMeshComponent;
+class UCapsuleComponent;
 
 
 
@@ -28,6 +29,9 @@ protected:
 	UArrowComponent* m_pArrow;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCapsuleComponent* m_pCollision;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* m_pMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Configuration")
@@ -41,7 +45,21 @@ public:
 	virtual void InitItem(AActor* _pOwner) override;
 	virtual bool OnUse(FInventorySlot_Info* const pSlotInfo) override;
 
+	void StartAttack();
+	void EndAttack();
+
 	/* Get */
 	FORCEINLINE const EEquipment_Types& GetEquipmentType() const { return m_EquipmentType; }
-	FORCEINLINE const FName&           GetSocketName()    const { return m_SocketName; }
+	FORCEINLINE const FName&            GetSocketName()    const { return m_SocketName; }
+
+protected :
+	UFUNCTION()
+	void _OnComponentBeginOverlap(
+		UPrimitiveComponent* _pOverlappedComponent, 
+		AActor* _pOtherActor, 
+		UPrimitiveComponent* _pOtherComp,
+		int32 _OtherBodyIndex, 
+		bool _bFromSweep, 
+		const FHitResult& _SweepResult);
+
 };
