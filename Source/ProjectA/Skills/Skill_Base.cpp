@@ -2,7 +2,7 @@
 
 #include "Skill_Base.h"
 #include "Players/Player_Character.h"
-#include "Components/Component_Skill.h"
+#include "Components/Component_SkillTree.h"
 
 #include <Animation/AnimMontage.h>
 #include <Components/TimelineComponent.h>
@@ -36,7 +36,7 @@ void ASkill_Base::BeginPlay()
 	}
 }
 
-void ASkill_Base::Use(UComponent_Skill* _pSkill)
+void ASkill_Base::Use(UComponent_SkillTree* _pSkill)
 {
 	m_pSkill = _pSkill;
 	m_bIsUsing = true;
@@ -45,6 +45,18 @@ void ASkill_Base::Use(UComponent_Skill* _pSkill)
 	float Duration = pPlayer->PlayAnimMontage(m_Info.pAnimMontage);
 
 	m_pSkillTimeline->PlayFromStart();
+}
+
+void  ASkill_Base::Upgrade()
+{
+	m_Info.CurrentLevel += 1;
+	m_Info.CurrentLevel = FMath::Clamp(m_Info.CurrentLevel, 0, m_Info.MaxLevel);
+}
+
+void  ASkill_Base::Downgrade()
+{
+	m_Info.CurrentLevel -= 1;
+	m_Info.CurrentLevel = FMath::Clamp(m_Info.CurrentLevel, 0, m_Info.MaxLevel);
 }
 
 void ASkill_Base::_FinishSkill()

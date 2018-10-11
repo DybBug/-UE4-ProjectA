@@ -20,37 +20,34 @@ void UWidget_Pickup::NativeConstruct()
 	m_pCloseButton->OnClicked.AddDynamic(this, &UWidget_Pickup::_OnCloseButtonClicked);
 }
 
-void UWidget_Pickup::InitWidget(UWidget_Main* _pMain)
+void UWidget_Pickup::InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent)
 {
-	UWidget_Base::InitWidget(_pMain);
+	UWidget_Base::InitWidget(_pMain, _pComponent);
 }
 
-void UWidget_Pickup::Show(UComponent_Pickup* _pPickup)
+void UWidget_Pickup::GenerateSlots()
 {
 	m_pSlotPanel->ClearChildren();
-	m_pPickup = _pPickup;
+	UComponent_Pickup* pComp = Cast<UComponent_Pickup>(m_pComponent);
 
 	if (m_SlotWidgetClass)
 	{
-		for (int i = 0; i < m_pPickup->ItemCount(); ++i)
+		for (int i = 0; i < pComp->ItemCount(); ++i)
 		{
-			if (m_pPickup->GetItemInfoAtIndex(i)->ItemClass && (m_pPickup->GetItemInfoAtIndex(i)->Amount > 0))
+			if (pComp->GetItemInfoAtIndex(i)->ItemClass && (pComp->GetItemInfoAtIndex(i)->Amount > 0))
 			{
 				UWidget_PickupSlot* pPickupSlot = CreateWidget<UWidget_PickupSlot>(this, m_SlotWidgetClass);
-				pPickupSlot->InitWidget(m_pPickup, i, m_pMainWidget->GetDetailWidget());
+				pPickupSlot->InitWidget(pComp, i, m_pMainWidget->GetDetailWidget());
 				m_pSlotPanel->AddChildToVerticalBox(pPickupSlot);
 				m_pSlotPanel->AddChildToVerticalBox(pPickupSlot);
 			}
 		}
 	}
-	
-	SetVisibility(ESlateVisibility::Visible);
 }
 
-void UWidget_Pickup::Hide()
+void UWidget_Pickup::RemoveSlots()
 {
 	m_pSlotPanel->ClearChildren();
-	SetVisibility(ESlateVisibility::Hidden);
 }
 
 FReply UWidget_Pickup::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -69,5 +66,6 @@ void UWidget_Pickup::NativeOnDragDetected(const FGeometry& InGeometry, const FPo
 
 void UWidget_Pickup::_OnCloseButtonClicked()
 {
-	Cast<IInterface_Interaction>(m_pPickup->GetOwner())->UnInteract();
+	UComponent_Pickup* pComp = Cast<UComponent_Pickup>(m_pComponent);
+	Cast<IInterface_Interaction>(pComp->GetOwner())->UnInteract();
 }

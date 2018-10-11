@@ -36,53 +36,48 @@ void UComponent_Equipment::BeginPlay()
 	
 }
 
-void UComponent_Equipment::InitComponent(UWidget_Equipment* _pWidget)
+void UComponent_Equipment::InitComponent(UWidget_Base* _pWidget)
 {
-	m_pEquipmentWidget = _pWidget;
+	UComponent_Base::InitComponent(_pWidget);
 
-	m_WeaponSlot.pSlotWidget = m_pEquipmentWidget->GetWeaponSlot();
+	UWidget_Equipment* pWidget = Cast<UWidget_Equipment>(m_pWidget);
+
+	m_WeaponSlot.pSlotWidget = pWidget->GetWeaponSlot();
 	m_WeaponSlot.pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipWeapon);
 	m_WeaponSlot.pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipWeapon);
 
-	m_SecondaryWeaponSlot.pSlotWidget = m_pEquipmentWidget->GetSecondaryWeaponSlot();
+	m_SecondaryWeaponSlot.pSlotWidget = pWidget->GetSecondaryWeaponSlot();
 	m_SecondaryWeaponSlot.pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipSecondaryWeapon);
 	m_SecondaryWeaponSlot.pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipSecondaryWeapon);
 
-	m_NecklaceSlot.pSlotWidget = m_pEquipmentWidget->GetNecklaceSlot();
+	m_NecklaceSlot.pSlotWidget = pWidget->GetNecklaceSlot();
 	m_NecklaceSlot.pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipNecklace);
 	m_NecklaceSlot.pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipNecklace);
 
-	m_BeltSlot.pSlotWidget = m_pEquipmentWidget->GetBeltSlot();
+	m_BeltSlot.pSlotWidget = pWidget->GetBeltSlot();
 	m_BeltSlot.pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipBelt);
 	m_BeltSlot.pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipBelt);
 
-	m_RingSlots[0].pSlotWidget = m_pEquipmentWidget->GetRingSlot_L();
+	m_RingSlots[0].pSlotWidget = pWidget->GetRingSlot_L();
 	m_RingSlots[0].pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipRing_L);
 	m_RingSlots[0].pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipRing_L);
 
-	m_RingSlots[1].pSlotWidget = m_pEquipmentWidget->GetRingSlot_R();
+	m_RingSlots[1].pSlotWidget = pWidget->GetRingSlot_R();
 	m_RingSlots[1].pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipRing_R);
 	m_RingSlots[1].pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipRing_R);
 
-	m_EarringSlots[0].pSlotWidget = m_pEquipmentWidget->GetEarringSlot_L();
+	m_EarringSlots[0].pSlotWidget = pWidget->GetEarringSlot_L();
 	m_EarringSlots[0].pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipEarring_L);
 	m_EarringSlots[0].pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipEarring_L);
 
-	m_EarringSlots[1].pSlotWidget = m_pEquipmentWidget->GetEarringSlot_R();
+	m_EarringSlots[1].pSlotWidget = pWidget->GetEarringSlot_R();
 	m_EarringSlots[1].pSlotWidget->BindEquipFunc(this, &UComponent_Equipment::_EquipEarring_R);
 	m_EarringSlots[1].pSlotWidget->BindUnEquipFunc(this, &UComponent_Equipment::_UnEquipEarring_R);
 }
 
-void UComponent_Equipment::Open()
+void UComponent_Equipment::UpdateComponent()
 {
-	m_bIsOpen = true;
-	m_pEquipmentWidget->SetVisibility(ESlateVisibility::Visible);
-}
 
-void UComponent_Equipment::Close()
-{
-	m_bIsOpen = false;
-	m_pEquipmentWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 bool UComponent_Equipment::OnEquip(AItem_Equipment* _pEquipment)

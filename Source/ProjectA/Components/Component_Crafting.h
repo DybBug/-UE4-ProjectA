@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/Component_Base.h"
 #include "ProjectA_Enums.h"
 #include "Component_Crafting.generated.h"
 
@@ -27,7 +27,7 @@ public :
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTA_API UComponent_Crafting : public UActorComponent
+class PROJECTA_API UComponent_Crafting : public UComponent_Base
 {
 	GENERATED_BODY()
 
@@ -43,24 +43,14 @@ protected :
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TArray<FCrafting_Info> m_pCraftingItems;
 
-	UWidget_Crafting* m_pCraftingWidget;
-
-	bool m_bIsOpen;
-
 public :
-	void InitComponent(UWidget_Crafting* _pWidget);
-	void UpdateComponent();
+	virtual void InitComponent(UWidget_Base* _pWidget) override;
+	virtual void UpdateComponent() override;
 
 	bool CreateItem(const FCrafting_Info& _Crafting_Info);
 
-	void Open();
-	void Close();
-
 	/* Get */
-	FORCEINLINE const bool& GetIsOpen() const { return m_bIsOpen; }
 	FORCEINLINE const TArray<FCrafting_Info>& GetCraftingItems() const { return m_pCraftingItems; }
 
-	/* Set */
-	FORCEINLINE void SetIsOpen(const bool& _bIsOpen) { m_bIsOpen = _bIsOpen; }
 };
 

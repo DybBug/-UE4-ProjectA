@@ -11,6 +11,7 @@
  */
 class UButton;
 class UWidget_Main;
+class UComponent_Base;
 
 UCLASS()
 class PROJECTA_API UWidget_Base : public UUserWidget
@@ -19,9 +20,18 @@ class PROJECTA_API UWidget_Base : public UUserWidget
 
 protected :
 	UWidget_Main* m_pMainWidget;
+	UComponent_Base* m_pComponent;
 
 public :
-	void InitWidget(UWidget_Main* _pMainWidget);
+	virtual void InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent); 
+	virtual void UpdateWidget();
+
+	/* Get */
+	FORCEINLINE UComponent_Base* const& GetComponent() const { return m_pComponent; }
+
+	/* Set */
+	FORCEINLINE void SetMainWidget(UWidget_Main* _pMainWidget)  { m_pMainWidget = _pMainWidget; }
+	FORCEINLINE void SetComponent(UComponent_Base* _pComponent) { m_pComponent = _pComponent; }
 	
 protected :
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

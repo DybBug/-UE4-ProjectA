@@ -48,21 +48,9 @@ protected :
 
 	UComponent_Stat* m_pStat;
 
-	int m_StatPoint;
-	int m_UsedStatPoint;
-
 public :
-	void InitWidget(UWidget_Main* _pMainWidget, UComponent_Stat* _pStat);
-	void UpdateWidget(int _Point);
-
-	void ModifyStatPoint(int _Value);
-
-	/* Get */
-	FORCEINLINE const int& GetStatPoint() const { return m_StatPoint; }
-	FORCEINLINE const int& GetUsedStatPoint() const { return m_UsedStatPoint; }
-
-	/* Set */
-	
+	virtual void InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent) override;
+	virtual void UpdateWidget() override;	
 
 public:
 	void GenerateStatEntries();	

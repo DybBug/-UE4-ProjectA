@@ -22,35 +22,35 @@ void UWidget_Equipment::NativeConstruct()
 	
 }
 
-void UWidget_Equipment::InitWidget(UWidget_Main* _pMainWidget, UComponent_Equipment* _pEquipment)
+void UWidget_Equipment::InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent)
 {
-	UWidget_Base::InitWidget(_pMainWidget);
+	UWidget_Base::InitWidget(_pMainWidget, _pComponent);
 
-	m_pEquipment = _pEquipment;
+	UComponent_Equipment* pComp = Cast<UComponent_Equipment>(m_pComponent);
 
-	m_pWeaponSlot->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pWeaponSlot->SetSlotInfo(&m_pEquipment->GetWeaponSlot());
+	m_pWeaponSlot->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pWeaponSlot->SetSlotInfo(&pComp->GetWeaponSlot());
 
-	m_pSecondaryWeaponSlot->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pSecondaryWeaponSlot->SetSlotInfo(&m_pEquipment->GetSecondaryWeaponSlot());
+	m_pSecondaryWeaponSlot->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pSecondaryWeaponSlot->SetSlotInfo(&pComp->GetSecondaryWeaponSlot());
 
-	m_pNecklaceSlot->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pNecklaceSlot->SetSlotInfo(&m_pEquipment->GetNecklaceSlot());
+	m_pNecklaceSlot->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pNecklaceSlot->SetSlotInfo(&pComp->GetNecklaceSlot());
 
-	m_pBeltSlot->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pBeltSlot->SetSlotInfo(&m_pEquipment->GetBeltSlot());
+	m_pBeltSlot->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pBeltSlot->SetSlotInfo(&pComp->GetBeltSlot());
 
-	m_pRingSlot_L->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pRingSlot_L->SetSlotInfo(&m_pEquipment->GetRingSlots()[0]);
+	m_pRingSlot_L->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pRingSlot_L->SetSlotInfo(&pComp->GetRingSlots()[0]);
 
-	m_pRingSlot_R->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pRingSlot_R->SetSlotInfo(&m_pEquipment->GetRingSlots()[1]);
+	m_pRingSlot_R->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pRingSlot_R->SetSlotInfo(&pComp->GetRingSlots()[1]);
 
-	m_pEarringSlot_L->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pEarringSlot_L->SetSlotInfo(&m_pEquipment->GetEarringSlots()[0]);
+	m_pEarringSlot_L->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pEarringSlot_L->SetSlotInfo(&pComp->GetEarringSlots()[0]);
 
-	m_pEarringSlot_R->InitWidget(m_pEquipment, m_pMainWidget->GetDetailWidget());
-	m_pEarringSlot_R->SetSlotInfo(&m_pEquipment->GetEarringSlots()[1]);
+	m_pEarringSlot_R->InitWidget(pComp, m_pMainWidget->GetDetailWidget());
+	m_pEarringSlot_R->SetSlotInfo(&pComp->GetEarringSlots()[1]);
 }
 
 bool UWidget_Equipment::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
@@ -66,6 +66,6 @@ bool UWidget_Equipment::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 
 void UWidget_Equipment::_OnCloseButtonClicked()
 {
-	m_pEquipment->Close();
+	m_pComponent->Close();
 }
 

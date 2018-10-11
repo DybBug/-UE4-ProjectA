@@ -20,10 +20,8 @@ UComponent_Stat::UComponent_Stat()
 	}
 
 	m_StatPoint = 0;
-	m_bIsOpen = false;
+	m_UsedStatPoint = 0;
 }
-
-
 
 // Called when the game starts
 void UComponent_Stat::BeginPlay()
@@ -34,14 +32,14 @@ void UComponent_Stat::BeginPlay()
 
 }
 
-
-void UComponent_Stat::InitComponent(UWidget_Stat* _pWidget)
+void UComponent_Stat::InitComponent(UWidget_Base* _pWidget)
 {
+	UComponent_Base::InitComponent(_pWidget);
+
 	m_StatBarWidgets.Empty();
 	m_pEntryWidgets.Empty();
 
-	m_pStatWidget = _pWidget;
-	m_pStatWidget->GenerateStatEntries();
+	Cast<UWidget_Stat>(m_pWidget)->GenerateStatEntries();
 }
 
 bool UComponent_Stat::AddWidget(EStat_Types _Type, UWidget_StatBar* const _pWidget)
@@ -54,28 +52,18 @@ bool UComponent_Stat::AddWidget(EStat_Types _Type, UWidget_StatBar* const _pWidg
 	return false;
 }
 
-void UComponent_Stat::Open()
+void UComponent_Stat::AddStatPoint(float _Value)
 {
-	if (!m_bIsOpen)
-	{
-		m_bIsOpen = true;
-		m_pStatWidget->SetVisibility(ESlateVisibility::Visible);
-	}
-}
-
-void UComponent_Stat::Close()
-{
-	if (m_bIsOpen)
-	{
-		m_bIsOpen = false;
-		m_pStatWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
+	m_StatPoint += (_Value + m_UsedStatPoint);
+	m_pWidget->UpdateWidget();
 }
 
 void UComponent_Stat::ModifyStatPoint(float _Value)
 {
 	m_StatPoint += _Value;
-	m_pStatWidget->UpdateWidget(m_StatPoint);
+	m_UsedStatPoint -= _Value;
+
+	m_pWidget->UpdateWidget();
 }
 
 void UComponent_Stat::ModifyMaxValueByType(const EStat_Types& _Type, float _Value)
@@ -112,6 +100,19 @@ void UComponent_Stat::ModifyIncreasePerPointByType(const EStat_Types& _Type, flo
 	{
 		m_pEntryWidgets[(uint8)_Type]->UpdateWidget(m_Stats[_Type]);
 	}
+}
+
+void UComponent_Stat::Apply()
+{
+	m_UsedStatPoint = 0;
+}
+
+void UComponent_Stat::Cancel()
+{
+	m_StatPoint += m_UsedStatPoint;
+	m_UsedStatPoint = 0;
+
+	m_pWidget->UpdateWidget();
 }
 
 void UComponent_Stat::SetEntryWidget(UWidget_StatEntry* const& _pWidget)

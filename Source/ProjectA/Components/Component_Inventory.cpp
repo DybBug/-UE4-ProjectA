@@ -30,30 +30,15 @@ void UComponent_Inventory::BeginPlay()
 }
 
 
-bool UComponent_Inventory::InitComponent(UWidget_Inventory* _pWidget)
+void UComponent_Inventory::InitComponent(UWidget_Base* _pWidget)
 {
-	m_pInventoryWidget = _pWidget;
+	UComponent_Base::InitComponent(_pWidget);
 	_GenerateSlots();
-
-	return true;
 }
 
-void UComponent_Inventory::Open()
+void UComponent_Inventory::UpdateComponent()
 {
-	if (!m_bIsOpen)
-	{
-		m_bIsOpen = true;
-		m_pInventoryWidget->SetVisibility(ESlateVisibility::Visible);
-	}
-}
 
-void UComponent_Inventory::Close()
-{
-	if (m_bIsOpen)
-	{
-		m_bIsOpen = false;
-		m_pInventoryWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
 }
 
 int UComponent_Inventory::AddItem(AItem_Base* _pNewItem, int _Amount)
@@ -259,7 +244,10 @@ void UComponent_Inventory::_GenerateSlots()
 {
 	m_Slots.Empty();
 	m_Slots.SetNum(m_SlotTotalCount);
-	if (m_pInventoryWidget)
+
+	UWidget_Inventory* pWidget = Cast<UWidget_Inventory>(m_pWidget);
+
+	if (pWidget)
 	{
 		for (int i = 0; i < m_Slots.Num(); ++i)
 		{
@@ -268,7 +256,7 @@ void UComponent_Inventory::_GenerateSlots()
 
 			m_Slots[i].SlotIndex = i;
 
-			m_pInventoryWidget->GenerateSlots(&m_Slots[i], Row, Column);
+			pWidget->GenerateSlots(&m_Slots[i], Row, Column);
 		}
 	}
 }

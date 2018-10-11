@@ -51,13 +51,8 @@ protected :
 	UPROPERTY()
 	UWidget_EquipmentSlot* m_pRingSlot_R;
 
-	//
-	// ..
-	//
-	UComponent_Equipment* m_pEquipment;
-
 public :
-	void InitWidget(UWidget_Main* _pMainWidget, UComponent_Equipment* _pEquipment);
+	virtual void InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent) override;
 	
 	/* Get */
 	FORCEINLINE UWidget_EquipmentSlot* const& GetWeaponSlot()          const { return m_pWeaponSlot; }

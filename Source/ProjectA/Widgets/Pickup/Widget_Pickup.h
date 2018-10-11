@@ -33,15 +33,12 @@ protected :
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TSubclassOf<UWidget_PickupSlot> m_SlotWidgetClass;
-
-	UComponent_Pickup* m_pPickup;
-	
 	
 public :
-	void InitWidget(UWidget_Main* _pMain);
+	virtual void InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent) override;
 
-	void Show(UComponent_Pickup* _pPickup);
-	void Hide();
+	void GenerateSlots();
+	void RemoveSlots();
 
 protected :
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

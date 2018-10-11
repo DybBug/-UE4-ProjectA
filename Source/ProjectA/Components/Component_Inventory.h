@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/Component_Base.h"
 #include "Component_Inventory.generated.h"
 
 
-class UWidget_Inventory;
 class UWidget_InventorySlot;
 class AItem_Base;
 
@@ -37,7 +36,7 @@ public:
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTA_API UComponent_Inventory : public UActorComponent
+class PROJECTA_API UComponent_Inventory : public UComponent_Base
 {
 	GENERATED_BODY()
 
@@ -65,16 +64,9 @@ private :
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	TArray<FInventorySlot_Info> m_Slots;
 
-	UPROPERTY(VisibleAnywhere, Category = "Configuration")
-	bool m_bIsOpen;
-
-	UWidget_Inventory* m_pInventoryWidget;
-
 public :
-	bool InitComponent(UWidget_Inventory* _pWidget);
-
-	void Open();
-	void Close();
+	virtual void InitComponent(UWidget_Base* _pWidget) override;
+	virtual void UpdateComponent() override;
 
 	// #. Return : 추가하고 남은 수량.
 	int AddItem(AItem_Base* _pNewItem, int _Amount);
@@ -105,8 +97,6 @@ public :
 	FORCEINLINE const bool& GetIsOpen()         const { return m_bIsOpen; }
 
 	FORCEINLINE const TArray<FInventorySlot_Info>& GetSlots() const { return m_Slots; }
-
-	FORCEINLINE UWidget_Inventory* const& GetInventoryWidget() { return m_pInventoryWidget; }
 
 	/* Set */
 	FORCEINLINE void SetSlot(const FInventorySlot_Info& _Slot) { m_Slots.Emplace(_Slot); }

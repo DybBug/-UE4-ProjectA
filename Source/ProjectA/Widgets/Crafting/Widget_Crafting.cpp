@@ -20,11 +20,12 @@ void UWidget_Crafting::NativeConstruct()
 	m_pEquipmentButton->OnClicked.AddDynamic(this, &UWidget_Crafting::_OnEquipmentButtonClicked);
 }
 
-void UWidget_Crafting::InitWidget(UWidget_Main* _pMain, UComponent_Crafting* _pComponent)
+void UWidget_Crafting::InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent)
 {
-	UWidget_Base::InitWidget(_pMain);
-	m_pCrafting = _pComponent;
-	m_pCraftingScreen->InitWidget(m_pCrafting);
+	UWidget_Base::InitWidget(_pMain, _pComponent);
+
+	UComponent_Crafting* pComp = Cast<UComponent_Crafting>(m_pComponent);
+	m_pCraftingScreen->InitWidget(pComp);
 }
 
 void UWidget_Crafting::GenerateEntries()
@@ -34,7 +35,8 @@ void UWidget_Crafting::GenerateEntries()
 
 	if (m_EntryWidgetClass)
 	{
-		for (auto CraftingItem : m_pCrafting->GetCraftingItems())
+		UComponent_Crafting* pComp = Cast<UComponent_Crafting>(m_pComponent);
+		for (auto CraftingItem : pComp->GetCraftingItems())
 		{
 			UWidget_CraftingEntry* pEntryWidget = CreateWidget<UWidget_CraftingEntry>(this, m_EntryWidgetClass);
 			pEntryWidget->InitWidget(CraftingItem, m_pCraftingScreen);
@@ -59,24 +61,10 @@ void UWidget_Crafting::UpdateWidget()
 	}
 }
 
-void UWidget_Crafting::Show()
-{
-	SetVisibility(ESlateVisibility::Visible);
-}
-
-void UWidget_Crafting::Hide()
-{
-	SetVisibility(ESlateVisibility::Hidden);
-	m_pCraftingScreen->Hide();
-}
 
 void UWidget_Crafting::_OnCloseButtonClicked()
 {
-	if (m_pCrafting)
-	{
-		m_pCrafting->SetIsOpen(false);
-		Hide();
-	}
+	m_pComponent->Close();
 }
 
 void UWidget_Crafting::_OnConsumablesButtonClicked()

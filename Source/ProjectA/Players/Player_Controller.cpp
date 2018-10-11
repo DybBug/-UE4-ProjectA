@@ -3,6 +3,8 @@
 #include "Player_Controller.h"
 #include "Player_Character.h"
 #include "Enemies/Enemy_Base.h"
+#include "Widgets/Hotkey/Widget_Hotkey.h"
+#include "Widgets/Widget_Main.h"
 #include "Interfaces/Interface_Interaction.h"
 
 #include <WidgetBlueprintLibrary.h>
@@ -33,9 +35,11 @@ void APlayer_Controller::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Equipment_OpenAndClose"), IE_Pressed, this, &APlayer_Controller::_Equipment_OpenAndClose);
 	InputComponent->BindAction(TEXT("Stat_OpenAndClose"), IE_Pressed, this, &APlayer_Controller::_Stat_OpenAndClose);
 	InputComponent->BindAction(TEXT("Crafting_OpenAndClose"), IE_Pressed, this, &APlayer_Controller::_Crafting_OpenAndClose);
+	InputComponent->BindAction(TEXT("SkillTree_OpenAndClose"), IE_Pressed, this, &APlayer_Controller::_SkillTree_OpenAndClose);
 	InputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &APlayer_Controller::_Interact);
 	InputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &APlayer_Controller::_Jump);
 	InputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &APlayer_Controller::_Attack);
+	InputComponent->BindKey(EKeys::AnyKey, IE_Pressed, this, &APlayer_Controller::_AnyKey);
 
 	InputComponent->BindAxis(TEXT("MoveForward"), this, &APlayer_Controller::_MoveForward);
 	InputComponent->BindAxis(TEXT("MoveRight"), this, &APlayer_Controller::_MoveRight);
@@ -90,6 +94,11 @@ void APlayer_Controller::_Crafting_OpenAndClose()
 	m_pPlayer->CraftingOpenAndClose();
 }
 
+void APlayer_Controller::_SkillTree_OpenAndClose()
+{
+	m_pPlayer->SkillTreeOpenAndClose();
+}
+
 void APlayer_Controller::_Interact()
 {
 	FHitResult Result;
@@ -125,6 +134,20 @@ void APlayer_Controller::_Attack()
 	if (m_pPlayer->GetIsLockOn())
 	{
 		m_pPlayer->Attack();
+	}
+}
+
+void APlayer_Controller::_AnyKey()
+{
+	UWidget_Hotkey* pHotkey = m_pPlayer->GetMainWidget()->GetHotkeyWidget();
+	TArray<FKey> KeyList = pHotkey->GetHotkeyList();
+
+	for (int i = 0; i < KeyList.Num(); ++i)
+	{
+		if (WasInputKeyJustPressed(KeyList[i]))
+		{
+			pHotkey->PressKey(i);
+		}
 	}
 }
 

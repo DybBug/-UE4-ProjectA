@@ -18,6 +18,8 @@ class UWidget_ThrowAway;
 class UWidget_StatBar;
 class UWidget_Crafting;
 class UWidget_Compass;
+class UWidget_SkillTree;
+class UWidget_Hotkey;
 class APlayer_Character;
 
 UCLASS()
@@ -27,41 +29,47 @@ class PROJECTA_API UWidget_Main : public UUserWidget
 
 protected:
 	UPROPERTY()
-		UWidget_Inventory* m_pInventoryWidget;
+	UWidget_Inventory* m_pInventoryWidget;
 
 	UPROPERTY()
-		UWidget_Equipment* m_pEquipmentWidget;
+	UWidget_Equipment* m_pEquipmentWidget;
 
 	UPROPERTY()
-		UWidget_Stat* m_pStatWidget;
+	UWidget_Stat* m_pStatWidget;
 
 	UPROPERTY()
-		UWidget_ThrowAway* m_pThrowAwayWidget;
+	UWidget_ThrowAway* m_pThrowAwayWidget;
 
 	UPROPERTY()
-		UWidget_Pickup* m_pPickupWidget;
+	UWidget_Pickup* m_pPickupWidget;
 
 	UPROPERTY()
-		UWidget_StatBar* m_pHealthBarWidget;
+	UWidget_StatBar* m_pHealthBarWidget;
 
 	UPROPERTY()
-		UWidget_StatBar* m_pManaBarWidget;
+	UWidget_StatBar* m_pManaBarWidget;
 
 	UPROPERTY()
-		UWidget_StatBar* m_pStaminaBarWidget;
+	UWidget_StatBar* m_pStaminaBarWidget;
 
 	UPROPERTY()
 	UWidget_Crafting* m_pCraftingWidget;
 
 	UPROPERTY()
-		UWidget_Compass* m_pCompassWidget;
+	UWidget_SkillTree* m_pSkillTreeWidget;
+
+	UPROPERTY()
+	UWidget_Hotkey* m_pHotkeyWidget;
+
+	UPROPERTY()
+	UWidget_Compass* m_pCompassWidget;
 
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
-		TSubclassOf<UWidget_Detail> m_DetailWidgetClass;
+	TSubclassOf<UWidget_Detail> m_DetailWidgetClass;
 
 	UPROPERTY()
-		UWidget_Detail* m_pDetailWidget = nullptr;
+	UWidget_Detail* m_pDetailWidget = nullptr;
 
 	APlayer_Character* m_pPlayer;
 
@@ -80,6 +88,8 @@ public:
 	FORCEINLINE UWidget_StatBar*   const& GetManaBarWidget()    const { return m_pManaBarWidget; }
 	FORCEINLINE UWidget_StatBar*   const& GetStaminaBarWidget() const { return m_pStaminaBarWidget; }
 	FORCEINLINE UWidget_Crafting*  const& GetCraftingWidget()   const { return m_pCraftingWidget; }
+	FORCEINLINE UWidget_SkillTree* const& GetSkillTreeWidget()  const { return m_pSkillTreeWidget; }
+	FORCEINLINE UWidget_Hotkey*    const& GetHotkeyWidget()     const { return m_pHotkeyWidget; }
 	FORCEINLINE UWidget_Compass*   const& GetCompassWidget()    const { return m_pCompassWidget; }
 
 protected :

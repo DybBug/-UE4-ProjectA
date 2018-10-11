@@ -12,7 +12,11 @@
 class UButton;
 class UTextBlock;
 class UWidget_Main;
-class UComponent_Skill;
+class UWidget_SkillDetail;
+class UWidget_ComboSlot;
+class UComponent_SkillTree;
+class UWidgetSwitcher;
+class UHorizontalBox;
 
 UCLASS()
 class PROJECTA_API UWidget_SkillTree : public UWidget_Base
@@ -20,16 +24,51 @@ class PROJECTA_API UWidget_SkillTree : public UWidget_Base
 	GENERATED_BODY()
 
 protected:
+	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	
 protected :
 	UPROPERTY()
 	UButton* m_pCloseButton;
-	
-	UComponent_Skill* m_pSkill;
+
+	UPROPERTY()
+	UTextBlock* m_pPointText;
+
+	UPROPERTY()
+	UButton* m_pActiveButton;
+
+	UPROPERTY()
+	UButton* m_pBuffButton;
+
+	UPROPERTY()
+	UButton* m_pPassiveButton;
+
+	UPROPERTY()
+	UWidgetSwitcher* m_pSkillCategoryList;
+
+	UPROPERTY()
+	UHorizontalBox* m_pComboList;
+
+
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	TSubclassOf<UWidget_SkillDetail> m_SkillDetailWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	TSubclassOf<UWidget_ComboSlot> m_ComboSlotWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	int m_ComboCount;
+
+	UWidget_SkillDetail* m_pSkillDetailWidget;
+
 	
 public :
-	void InitWidget(UWidget_Main* _pMain, UComponent_Skill* _pSkill);
+	virtual void InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent) override;
+	virtual void UpdateWidget() override;
+
+	/* Get */
+	FORCEINLINE UWidget_SkillDetail* const& GetSkillDetailWidget() const { return m_pSkillDetailWidget; }
+	FORCEINLINE const int& GetComboCount() const { return m_ComboCount; }
 
 protected :
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
@@ -39,6 +78,15 @@ protected :
 private:
 	UFUNCTION()
 	void _OnCloseButtonClicked();
+
+	UFUNCTION()
+	void _OnActiveButtonClicked();
+
+	UFUNCTION()
+	void _OnBuffButtonClicked();
+
+	UFUNCTION()
+	void _OnPassiveButtonClicked();
 
 
 };

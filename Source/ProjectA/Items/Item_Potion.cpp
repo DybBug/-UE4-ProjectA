@@ -34,7 +34,7 @@ bool AItem_Potion::OnUse(FInventorySlot_Info* const pSlotInfo)
 					pSlotInfo->pItem = nullptr;
 					Destroy();
 				}
-				pSlotInfo->pSlotWidget->UpdateWidget();
+				//pSlotInfo->pSlotWidget->UpdateWidget();
 				return bSuccess;
 			}
 		}

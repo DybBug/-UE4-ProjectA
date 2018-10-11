@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/Component_Base.h"
 #include "ProjectA_Enums.h"
 #include "Component_Stat.generated.h"
 
 class UWidget_StatBar;
-class UWidget_Stat;
 class UWidget_StatEntry;
 
 USTRUCT(BlueprintType)
@@ -41,7 +40,7 @@ public :
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTA_API UComponent_Stat : public UActorComponent
+class PROJECTA_API UComponent_Stat : public UComponent_Base
 {
 	GENERATED_BODY()
 
@@ -60,21 +59,18 @@ protected :
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	int m_StatPoint;
 
-	UWidget_Stat* m_pStatWidget;
+	int m_UsedStatPoint;
 
 	TArray<UWidget_StatEntry*> m_pEntryWidgets;
 
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	TMap<EStat_Types, UWidget_StatBar*> m_StatBarWidgets;
 
-	bool m_bIsOpen;
-
 public :
-	void InitComponent(UWidget_Stat* _pWidget);
-	bool AddWidget(EStat_Types _Type, UWidget_StatBar* const _pWidget);
+	virtual void InitComponent(UWidget_Base* _pWidget) override;
 
-	void Open();
-	void Close();
+	bool AddWidget(EStat_Types _Type, UWidget_StatBar* const _pWidget);
+	void AddStatPoint(float _Value);
 
 	void ModifyStatPoint(float _Value);
 	void ModifyMaxValueByType(const EStat_Types& _Type, float _Value = 0.f);
@@ -82,15 +78,17 @@ public :
 	void ModifyIncreasePerLevelUpByType(const EStat_Types& _Type, float _Value = 0.f);
 	void ModifyIncreasePerPointByType(const EStat_Types& _Type, float _Value = 0.f);
 
+	void Apply();
+	void Cancel();
+
 	void SetEntryWidget(UWidget_StatEntry* const& _pWidget);
 
 	/* Get */
-	FORCEINLINE UWidget_Stat* const& GetStatWidget() const { return m_pStatWidget; }
-
 	FORCEINLINE const int& GetStatPoint() const { return m_StatPoint; }
+	FORCEINLINE const int& GetUsedStatPoint() const { return m_UsedStatPoint; }
+
 	FORCEINLINE const TMap<EStat_Types, FStat_Info>& GetStats() const { return m_Stats; }
 	FORCEINLINE const FStat_Info& GetStat(EStat_Types _Type) const { return m_Stats[_Type]; }
-	FORCEINLINE const bool&  GetIsOpen() const { return m_bIsOpen; }
 
 	/* Set */
 	FORCEINLINE void SetStat(EStat_Types _Type, const FStat_Info& _Stat) { m_Stats[_Type] = _Stat; }

@@ -15,7 +15,6 @@ UComponent_Crafting::UComponent_Crafting()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
-	m_bIsOpen = false;
 }
 
 // Called when the game starts
@@ -25,15 +24,17 @@ void UComponent_Crafting::BeginPlay()
 
 }
 
-void UComponent_Crafting::InitComponent(UWidget_Crafting* _pWidget)
+void UComponent_Crafting::InitComponent(UWidget_Base* _pWidget)
 {
-	m_pCraftingWidget = _pWidget;
-	m_pCraftingWidget->GenerateEntries();
+	UComponent_Base::InitComponent(_pWidget);
+
+	UWidget_Crafting* pWidget = Cast<UWidget_Crafting>(m_pWidget);
+	pWidget->GenerateEntries();
 }
 
 void UComponent_Crafting::UpdateComponent()
 {
-	m_pCraftingWidget->UpdateWidget();
+	m_pWidget->UpdateWidget();
 }
 
 bool UComponent_Crafting::CreateItem(const FCrafting_Info& _Crafting_Info)
@@ -75,21 +76,4 @@ bool UComponent_Crafting::CreateItem(const FCrafting_Info& _Crafting_Info)
 	}
 }
 
-void UComponent_Crafting::Open()
-{
-	if (!m_bIsOpen)
-	{
-		m_bIsOpen = true;
-		m_pCraftingWidget->Show();
-	}
-}
-
-void UComponent_Crafting::Close()
-{
-	if (m_bIsOpen)
-	{
-		m_bIsOpen = false;
-		m_pCraftingWidget->Hide();
-	}
-}
 

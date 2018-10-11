@@ -40,10 +40,8 @@ protected :
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TSubclassOf<UWidget_InventorySlot> m_SlotWidgetClass;
 
-	UComponent_Inventory* m_pInventory;
-
 public :
-	void InitWidget(UWidget_Main* _pMain, UComponent_Inventory* _pInventory);
+	virtual void InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent) override;
 
 	bool GenerateSlots(FInventorySlot_Info* _pSlot, int _Row, int _Column);
 

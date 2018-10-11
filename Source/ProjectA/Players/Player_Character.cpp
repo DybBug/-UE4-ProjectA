@@ -7,7 +7,7 @@
 #include "Components/Component_Equipment.h"
 #include "Components/Component_Stat.h"
 #include "Components/Component_Crafting.h"
-#include "Components/Component_Skill.h"
+#include "Components/Component_SkillTree.h"
 #include "Items/Item_Equipment.h"
 
 #include <GameFramework/SpringArmComponent.h>
@@ -44,7 +44,7 @@ APlayer_Character::APlayer_Character()
 	m_pEquipment = CreateDefaultSubobject<UComponent_Equipment>(TEXT("Equipment"));
 	m_pStat      = CreateDefaultSubobject<UComponent_Stat>(TEXT("Stat"));
 	m_pCrafting  = CreateDefaultSubobject<UComponent_Crafting>(TEXT("Crafting"));
-	m_pSkill     = CreateDefaultSubobject<UComponent_Skill>(TEXT("Skill"));
+	m_pSkillTree = CreateDefaultSubobject<UComponent_SkillTree>(TEXT("SkillTree"));
 }
 
 // Called when the game starts or when spawned
@@ -55,6 +55,7 @@ void APlayer_Character::BeginPlay()
 	if (IsValid(m_MainWidgetClass))
 	{
 		m_pMainWidget = CreateWidget<UWidget_Main>(GetWorld(), m_MainWidgetClass);
+		m_pMainWidget->AddToViewport();
 		bool bSuccess = m_pMainWidget->InitWidget(this);
 
 		if (bSuccess)
@@ -63,8 +64,7 @@ void APlayer_Character::BeginPlay()
 			m_pEquipment->InitComponent(m_pMainWidget->GetEquipmentWidget());
 			m_pStat->InitComponent(m_pMainWidget->GetStatWidget());
 			m_pCrafting->InitComponent(m_pMainWidget->GetCraftingWidget());
-	
-			m_pMainWidget->AddToViewport();
+			m_pSkillTree->InitComponent(m_pMainWidget->GetSkillTreeWidget());
 		}
 		else
 		{
@@ -103,7 +103,7 @@ void APlayer_Character::Attack()
 {
 	if (m_pEquipment->GetWeaponSlot().pItem)
 	{
-		m_pSkill->UseSkill();
+		m_pSkillTree->UseSkill();
 	}
 }
 
@@ -191,6 +191,18 @@ void APlayer_Character::CraftingOpenAndClose()
 	else
 	{
 		m_pCrafting->Open();
+	}
+}
+
+void APlayer_Character::SkillTreeOpenAndClose()
+{
+	if (m_pSkillTree->GetIsOpen())
+	{
+		m_pSkillTree->Close();
+	}
+	else
+	{
+		m_pSkillTree->Open();
 	}
 }
 
@@ -289,7 +301,8 @@ void APlayer_Character::LevelUp()
 			m_pStat->ModifyCurrentValueByType(Stat.Key, Stat.Value.IncreasePerLevelUp);
 		}
 	}
-	m_pStat->ModifyStatPoint(5);
+	m_pStat->AddStatPoint(5);
+	m_pSkillTree->AddSkillPoint(1);
 }
 
 bool APlayer_Character::GainExperience(float _Value)

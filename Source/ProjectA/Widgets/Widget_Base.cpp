@@ -2,13 +2,20 @@
 
 #include "Widget_Base.h"
 #include "Operations/Operation_Widget.h"
+#include "Components/Component_Base.h"
 
 #include <Components/Button.h>
 
 
-void UWidget_Base::InitWidget(UWidget_Main* _pMainWidget)
+void UWidget_Base::InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent)
 {
 	m_pMainWidget = _pMainWidget;
+	m_pComponent = _pComponent;
+}
+
+void UWidget_Base::UpdateWidget()
+{
+
 }
 
 FReply UWidget_Base::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)

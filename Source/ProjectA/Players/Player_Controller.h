@@ -10,6 +10,7 @@
  * 
  */
 class APlayer_Character;
+class UComponent_Base;
 
 UCLASS()
 class PROJECTA_API APlayer_Controller : public APlayerController
@@ -57,6 +58,9 @@ private :
 	void _Crafting_OpenAndClose();
 
 	UFUNCTION()
+	void _SkillTree_OpenAndClose();
+
+	UFUNCTION()
 	void _Interact();
 
 	UFUNCTION()
@@ -64,6 +68,9 @@ private :
 
 	UFUNCTION()
 	void _Attack();
+
+	UFUNCTION()
+	void _AnyKey();
 
 	//
 	// #. Input Axis Functions.

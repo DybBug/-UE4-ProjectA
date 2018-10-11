@@ -23,6 +23,8 @@ void UWidget_StatEntry::InitWidget(const EStat_Types& _Type, UComponent_Stat* _p
 	m_StatType = _Type;
 	m_pStat = _pStat;
 
+	m_IncreaseCount = 0;
+
 	m_StatInfo = m_pStat->GetStat(m_StatType);
 
 	if (m_StatInfo.MaxValue <= 0.f)
@@ -98,6 +100,7 @@ void UWidget_StatEntry::UpdateStatColor()
 
 void UWidget_StatEntry::ResetStat()
 {
+	m_IncreaseCount = 0;
 	UpdateWidget(m_pStat->GetStat(m_StatType));
 }
 
@@ -141,6 +144,7 @@ void UWidget_StatEntry::OnActivePlusButton(bool _bActive, ESlateVisibility _Visi
 	 }
 
 	 m_pCurrentText->SetText(FText::AsNumber(m_StatInfo.CurrentValue));
+	 m_IncreaseCount++;
  }
 
  void UWidget_StatEntry::_DecreaseStat()
@@ -157,59 +161,89 @@ void UWidget_StatEntry::OnActivePlusButton(bool _bActive, ESlateVisibility _Visi
 	 }
 
 	 m_pCurrentText->SetText(FText::AsNumber(m_StatInfo.CurrentValue));
+	 m_IncreaseCount--;
  }
 
  void UWidget_StatEntry::_UpdatePlusButton()
  {
-	if (m_pStat->GetStatWidget()->GetStatPoint() == 0)
-	{
-		OnActivePlusButton(false, ESlateVisibility::Visible);
-	}
-	else
+	 UWidget_Stat* pWidget = Cast<UWidget_Stat>(m_pStat->GetWidget());
+
+	if (m_pStat->GetStatPoint() > 0)
 	{
 		OnActivePlusButton(true, ESlateVisibility::Visible);
 	}
-
+	else if (m_pStat->GetStatPoint() == 0)
+	{
+		if (m_pStat->GetUsedStatPoint() == 0)
+		{
+			OnActivePlusButton(false, ESlateVisibility::Collapsed);
+		}
+		else
+		{
+			OnActivePlusButton(false, ESlateVisibility::Visible);
+		}
+	}
  }
 
  void UWidget_StatEntry::_UpdateMinusButton()
  {
-	if (m_StatInfo.MaxValue == 0)
+	 // #. 사용 가능한 스탯 포인트가 있을 경우.
+	if (m_pStat->GetStatPoint())
 	{
-		if (m_StatInfo.CurrentValue == m_pStat->GetStat(m_StatType).CurrentValue)
+		if (m_StatInfo.MaxValue == 0)
 		{
-			OnActiveMinusButton(false, ESlateVisibility::Visible);
+			if (m_StatInfo.CurrentValue == m_pStat->GetStat(m_StatType).CurrentValue)
+			{
+				OnActiveMinusButton(false, ESlateVisibility::Visible);
+			}
+			else
+			{
+				OnActiveMinusButton(true, ESlateVisibility::Visible);
+			}
 		}
 		else
 		{
-			OnActiveMinusButton(true, ESlateVisibility::Visible);
+			if (m_StatInfo.MaxValue == m_pStat->GetStat(m_StatType).MaxValue)
+			{
+				OnActiveMinusButton(false, ESlateVisibility::Visible);
+			}
+			else
+			{
+				OnActiveMinusButton(true, ESlateVisibility::Visible);
+			}
 		}
 	}
+	// #. 사용 가능한 스탯 포인트가 없을 경우.
 	else
 	{
-		if (m_StatInfo.MaxValue == m_pStat->GetStat(m_StatType).MaxValue)
+		if (m_pStat->GetUsedStatPoint() == 0)
 		{
-			OnActiveMinusButton(false, ESlateVisibility::Visible);
+			OnActiveMinusButton(false, ESlateVisibility::Collapsed);
 		}
 		else
 		{
-			OnActiveMinusButton(true, ESlateVisibility::Visible);
+			if (m_IncreaseCount > 0)
+			{
+				OnActiveMinusButton(true, ESlateVisibility::Visible);
+			}
+			else
+			{
+				OnActiveMinusButton(false, ESlateVisibility::Visible);
+			}
 		}
-	}	 
+	} 
  }
 
 void UWidget_StatEntry::_OnPlusButtonClicked()
 {	
 	_IncreaseStat();
-
-	m_pStat->GetStatWidget()->ModifyStatPoint(-1);
+	m_pStat->ModifyStatPoint(-1);
 }
 
 void UWidget_StatEntry::_OnMinusButtonClicked()
 {
 	_DecreaseStat();
-
-	m_pStat->GetStatWidget()->ModifyStatPoint(1);
+	m_pStat->ModifyStatPoint(1);
 }
 
 #undef LOCTEXT_NAMESPACE

@@ -9,18 +9,17 @@
 /**
  * 
  */
-class UWidget_InventorySlot;
 
 UCLASS()
 class PROJECTA_API UOperation_Slot : public UDragDropOperation
 {
 	GENERATED_BODY()
 	
-	UWidget_InventorySlot* m_pDraggedSlot;
+	UUserWidget* m_pDraggedSlot;
 
 public :
-	void InitOperation(UWidget_InventorySlot* _pDraggedSlot);
+	void InitOperation(UUserWidget* _pDraggedSlot);
 
 	/* Get */
-	FORCEINLINE UWidget_InventorySlot* const& GetDraggedSlot() const { return m_pDraggedSlot; }
+	FORCEINLINE UUserWidget* const& GetDraggedSlot() const { return m_pDraggedSlot; }
 };

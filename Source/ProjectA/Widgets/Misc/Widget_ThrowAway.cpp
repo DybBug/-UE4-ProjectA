@@ -34,11 +34,9 @@ void UWidget_ThrowAway::NativeConstruct()
 	m_pCancelButton->OnClicked.AddDynamic(this, &UWidget_ThrowAway::_OnCancelButtonClicked);
 }
 
-void UWidget_ThrowAway::InitWidget(UWidget_Main* _pMainWidget, UComponent_Inventory* _pInventory)
+void UWidget_ThrowAway::InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent)
 {
-	UWidget_Base::InitWidget(_pMainWidget);
-
-	m_pInventory = _pInventory;
+	UWidget_Base::InitWidget(_pMainWidget, _pComponent);
 }
 
 void UWidget_ThrowAway::Show(FInventorySlot_Info* _pSlotInfo)
@@ -210,9 +208,10 @@ void UWidget_ThrowAway::_OnPlusButtonReleased()
 
 void UWidget_ThrowAway::_OnConfirmButtonClicked()
 {
-	if (m_pInventory)
+	UComponent_Inventory* pComp = Cast<UComponent_Inventory>(m_pComponent);
+	if (pComp)
 	{
-		m_pInventory->ThrowAwayItem(m_pSlotInfo->SlotIndex, m_CurrentThrowAmount);
+		pComp->ThrowAwayItem(m_pSlotInfo->SlotIndex, m_CurrentThrowAmount);
 		Hide();
 	}
 }

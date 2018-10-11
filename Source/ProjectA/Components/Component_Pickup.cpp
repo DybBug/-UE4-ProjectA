@@ -25,20 +25,26 @@ void UComponent_Pickup::BeginPlay()
 	m_PickupItemCount = m_Items.Num();
 }
 
-void UComponent_Pickup::Open(UWidget_Pickup* _PickupWidget)
+void UComponent_Pickup::InitComponent(UWidget_Base* _pWidget)
 {
-	m_bIsOpen = true;
-	m_pPickupWidget = _PickupWidget;
+	UComponent_Base::InitComponent(_pWidget);
+}
 
-	m_pPickupWidget->Show(this);
+void UComponent_Pickup::Open()
+{
+	UWidget_Pickup* pWidget = Cast<UWidget_Pickup>(m_pWidget);
+	pWidget->SetComponent(this);
+	pWidget->GenerateSlots();
+
+	UComponent_Base::Open();
 }
 
 void UComponent_Pickup::Close()
 {
-	m_bIsOpen = false;
-	m_pPickupWidget->Hide();
+	UWidget_Pickup* pWidget = Cast<UWidget_Pickup>(m_pWidget);
+	pWidget->RemoveSlots();
 
-	m_pPickupWidget = nullptr;
+	UComponent_Base::Close();
 }
 
 const FPickupSlot_Info* UComponent_Pickup::GetItemInfoAtIndex(int _Index)

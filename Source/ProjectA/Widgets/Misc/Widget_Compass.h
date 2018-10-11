@@ -32,7 +32,8 @@ protected :
 	AItem_Compass* m_pCurrentCompass;
 	
 public :
-	void InitWidget(UWidget_Main* _pMainWidget);
+	virtual void InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent) override;
+	virtual void UpdateWidget() override {};
 	void UpdateWidget(float _Angle);
 
 	void Show(AItem_Compass* m_pCurrCompass);

@@ -12,9 +12,9 @@ void UWidget_Compass::NativeConstruct()
 	m_pCloseButton->OnClicked.AddDynamic(this, &UWidget_Compass::_OnCloseButtonClicked);
 }
 
-void UWidget_Compass::InitWidget(UWidget_Main* _pMainWidget)
+void UWidget_Compass::InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent)
 {
-	UWidget_Base::InitWidget(_pMainWidget);
+	UWidget_Base::InitWidget(_pMainWidget, _pComponent);
 }
 
 void UWidget_Compass::UpdateWidget(float _Angle)

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/Component_Base.h"
 #include "Component_Pickup.generated.h"
 
 
@@ -31,7 +31,7 @@ public :
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTA_API UComponent_Pickup : public UActorComponent
+class PROJECTA_API UComponent_Pickup : public UComponent_Base
 {
 	GENERATED_BODY()
 
@@ -47,15 +47,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TArray<FPickupSlot_Info> m_Items;
 
-	UWidget_Pickup* m_pPickupWidget;
-
-	bool m_bIsOpen;
-
 	int m_PickupItemCount;
 
 public :
-	void Open(UWidget_Pickup* _PickupWidget);
-	void Close();
+	virtual void InitComponent(UWidget_Base* _pWidget) override;
+
+	virtual void Open() override;
+	virtual void Close() override;
 
 	const FPickupSlot_Info* GetItemInfoAtIndex(int _Index);
 
@@ -63,7 +61,4 @@ public :
 
 	void RemoveItemAtIndex(int _Index, int _RemoveAmount);
 
-
-	/* Get */
-	FORCEINLINE const bool& GetIsOpen() const { return m_bIsOpen; }
 };

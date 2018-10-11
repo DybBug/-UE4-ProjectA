@@ -14,7 +14,7 @@ class UComponent_Inventory;
 class UComponent_Equipment;
 class UComponent_Stat;
 class UComponent_Crafting;
-class UComponent_Skill;
+class UComponent_SkillTree;
 
 enum class EStat_Types :uint8;
 
@@ -58,7 +58,7 @@ protected :
 	UComponent_Crafting* m_pCrafting;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UComponent_Skill* m_pSkill;
+	UComponent_SkillTree* m_pSkillTree;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TSubclassOf<UWidget_Main> m_MainWidgetClass;
@@ -88,6 +88,7 @@ public :
 	void EquipmentOpenAndClose();
 	void StatOpenAndClose();
 	void CraftingOpenAndClose();
+	void SkillTreeOpenAndClose();
 
 	UFUNCTION(BlueprintPure)
 	FVector2D GetMovementDirection();
@@ -104,6 +105,7 @@ public :
 	FORCEINLINE UComponent_Equipment* const& GetEquipment()  const { return m_pEquipment; }
 	FORCEINLINE UComponent_Stat*      const& GetStat()       const { return m_pStat; }
 	FORCEINLINE UComponent_Crafting*  const& GetCrafting()   const { return m_pCrafting; }
+	FORCEINLINE UComponent_SkillTree* const& GetSkillTree()  const { return m_pSkillTree; }
 	FORCEINLINE UWidget_Main*         const& GetMainWidget() const { return m_pMainWidget; }
 	FORCEINLINE AActor*               const& GetTarget()     const { return m_pTarget; }
 

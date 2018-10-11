@@ -60,8 +60,6 @@ protected :
 	UPROPERTY()
 	FTimerHandle m_hPlusTimer;
 
-	UComponent_Inventory* m_pInventory;
-
 	FInventorySlot_Info* m_pSlotInfo;
 
 	int m_CurrentThrowAmount;
@@ -70,7 +68,7 @@ protected :
 	int m_ClickCount;
 
 public :
-	void InitWidget(UWidget_Main* _pMainWidget, UComponent_Inventory* _pInventory);
+	virtual void InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent) override;
 
 	void Show(FInventorySlot_Info* _pSlotInfo);
 	void Hide();

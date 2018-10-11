@@ -3,6 +3,7 @@
 #include "Chest.h"
 #include "Components/Component_Pickup.h"
 #include "Widgets/Widget_Main.h"
+#include "Widgets/Pickup/Widget_Pickup.h"
 #include "Players/Player_Character.h"
 
 #include <Components/SphereComponent.h>
@@ -30,7 +31,6 @@ AChest::AChest()
 	m_pMesh->SetupAttachment(RootComponent);
 
 	m_pPickup = CreateDefaultSubobject<UComponent_Pickup>(TEXT("Pickup"));
-
 }
 
 // Called when the game starts or when spawned
@@ -60,7 +60,9 @@ void AChest::OnInteract(APlayer_Character* _pPlayer)
 			}
 		}
 		m_pPlayer->SetTarget(this);
-		m_pPickup->Open(_pPlayer->GetMainWidget()->GetPickupWidget());
+		UWidget_Base* pWidget = m_pPlayer->GetMainWidget()->GetPickupWidget();
+		m_pPickup->InitComponent(pWidget);
+		m_pPickup->Open();
 	}
 }
 

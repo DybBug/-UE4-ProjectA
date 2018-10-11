@@ -6,7 +6,7 @@
 
 UManager_Master::UManager_Master()
 {
-	m_pAttackAnimMontagesManager = CreateDefaultSubobject<UManager_AttackAnimMontages>(TEXT("AttackAnimMontagesManager"));
+	//m_pAttackAnimMontagesManager = CreateDefaultSubobject<UManager_AttackAnimMontages>(TEXT("AttackAnimMontagesManager"));
 }
 
 

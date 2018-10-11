@@ -115,7 +115,7 @@ bool UWidget_InventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDra
 {
 	if (UOperation_Slot* pOper_Slot = Cast<UOperation_Slot>(InOperation))
 	{
-		UWidget_InventorySlot* pFromSlot = pOper_Slot->GetDraggedSlot();
+		UWidget_InventorySlot* pFromSlot = Cast<UWidget_InventorySlot>(pOper_Slot->GetDraggedSlot());
 		FInventorySlot_Info* pFromSlotInfo = pFromSlot->GetSlotInfo();
 		if (!m_pSlotInfo->pItem)
 		{

@@ -76,7 +76,9 @@ void UWidget_EquipmentSlot::NativeOnDragEnter(const FGeometry& InGeometry, const
 {
 	if (UOperation_Slot* pSlotOper = Cast<UOperation_Slot>(InOperation))
 	{
-		if (AItem_Equipment* pEquipment = Cast<AItem_Equipment>(pSlotOper->GetDraggedSlot()->GetSlotInfo()->pItem))
+		UWidget_InventorySlot* pInventorySlot = Cast<UWidget_InventorySlot>(pSlotOper->GetDraggedSlot());
+
+		if (AItem_Equipment* pEquipment = Cast<AItem_Equipment>(pInventorySlot->GetSlotInfo()->pItem))
 		{
 			if (pEquipment->GetEquipmentType() == m_Type)
 			{
@@ -98,13 +100,15 @@ bool UWidget_EquipmentSlot::NativeOnDrop(const FGeometry& InGeometry, const FDra
 {
 	if (UOperation_Slot* pSlotOper = Cast<UOperation_Slot>(InOperation))
 	{
-		if (AItem_Equipment* pEquipment = Cast<AItem_Equipment>(pSlotOper->GetDraggedSlot()->GetSlotInfo()->pItem))
+		UWidget_InventorySlot* pInventorySlot = Cast<UWidget_InventorySlot>(pSlotOper->GetDraggedSlot());
+
+		if (AItem_Equipment* pEquipment = Cast<AItem_Equipment>(pInventorySlot->GetSlotInfo()->pItem))
 		{
 			if (pEquipment->GetEquipmentType() == m_Type)
 			{
-				pSlotOper->GetDraggedSlot()->GetSlotInfo()->pItem = nullptr;
-				pSlotOper->GetDraggedSlot()->GetSlotInfo()->Amount = 0;
-				pSlotOper->GetDraggedSlot()->GetSlotInfo()->pSlotWidget->UpdateWidget();
+				pInventorySlot->GetSlotInfo()->pItem = nullptr;
+				pInventorySlot->GetSlotInfo()->Amount = 0;
+				pInventorySlot->GetSlotInfo()->pSlotWidget->UpdateWidget();
 				(m_pEquipmentRef->*EquipFunc)(pEquipment);
 				return true;
 			}

@@ -51,17 +51,11 @@ protected :
 	UPROPERTY(EditAnywhere,  Category = "Configuration")
 	TSubclassOf<UWidget_CraftingEntry> m_EntryWidgetClass;
 
-
-	UWidget_Main* m_pMainWidget;
-	UComponent_Crafting* m_pCrafting;
-
 public :
-	void InitWidget(UWidget_Main* _pMain, UComponent_Crafting* _pComponent);
-	void GenerateEntries();
-	void UpdateWidget();
+	virtual void InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent) override;
+	virtual void UpdateWidget() override;
 
-	void Show();
-	void Hide();
+	void GenerateEntries();
 
 private :
 	UFUNCTION()

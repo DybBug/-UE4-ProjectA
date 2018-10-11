@@ -20,10 +20,9 @@ void UWidget_Inventory::NativeConstruct()
 	m_pCloseButton->OnClicked.AddDynamic(this, &UWidget_Inventory::_OnCloseButtonClicked);
 }
 
-void UWidget_Inventory::InitWidget(UWidget_Main* _pMain, UComponent_Inventory* _pInventory)
+void UWidget_Inventory::InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent)
 {
-	UWidget_Base::InitWidget(_pMain);
-	m_pInventory = _pInventory;
+	UWidget_Base::InitWidget(_pMain, _pComponent);
 
 	m_pSlotPanel->ClearChildren();
 }
@@ -32,9 +31,10 @@ bool UWidget_Inventory::GenerateSlots(FInventorySlot_Info* _pSlot, int _Row, int
 {
 	if (m_SlotWidgetClass)
 	{	
+		UComponent_Inventory* pComp = Cast<UComponent_Inventory>(m_pComponent);
 		// #. 슬롯 위젯 생성 및 초기화.
 		UWidget_InventorySlot* pInventorySlot = CreateWidget<UWidget_InventorySlot>(GetWorld(), m_SlotWidgetClass);
-		pInventorySlot->InitWidget(m_pInventory, _pSlot, m_pMainWidget->GetDetailWidget());
+		pInventorySlot->InitWidget(pComp, _pSlot, m_pMainWidget->GetDetailWidget());
 		pInventorySlot->UpdateWidget();
 
 		// #. 생성된 인벤토리 슬롯 추가 및 행/열 설정.
@@ -77,10 +77,7 @@ void UWidget_Inventory::NativeOnDragDetected(const FGeometry& InGeometry, const 
 
 void UWidget_Inventory::_OnCloseButtonClicked()
 {
-	if (m_pInventory)
-	{
-		m_pInventory->Close();
-	}
+	m_pComponent->Close();
 }
 
 

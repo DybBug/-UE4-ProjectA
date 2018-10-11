@@ -16,42 +16,26 @@ void UWidget_Stat::NativeConstruct()
 	m_pCancelButton->OnClicked.AddDynamic(this, &UWidget_Stat::_OnCancelButtonClicked);
 }
 
-void UWidget_Stat::InitWidget(UWidget_Main* _pMainWidget, UComponent_Stat* _pStat)
+void UWidget_Stat::InitWidget(UWidget_Main* _pMainWidget, UComponent_Base* _pComponent)
 {
-	UWidget_Base::InitWidget(_pMainWidget);
+	UWidget_Base::InitWidget(_pMainWidget, _pComponent);
 
-	m_pStat = _pStat;
-
-	m_StatPoint = 0;
-	m_UsedStatPoint = 0;
+	m_pStat = Cast<UComponent_Stat>(m_pComponent);
 }
 
-void UWidget_Stat::UpdateWidget(int _Point)
+void UWidget_Stat::UpdateWidget()
 {
-	m_StatPoint = _Point;
+	int StatPoint = m_pStat->GetStatPoint();
 
-	m_pStatPointText->SetText(FText::AsNumber(m_StatPoint));
+	m_pStatPointText->SetText(FText::AsNumber(StatPoint));
 
 	for (int i = 0; i < m_pStatList->GetChildrenCount(); ++i)
 	{
 		UWidget_StatEntry* pEntryWidget = Cast<UWidget_StatEntry>(m_pStatList->GetChildAt(i));
 		pEntryWidget->UpdateButtons();
 		pEntryWidget->UpdateStatColor();
-	}	
+	}
 }
-
-
-void UWidget_Stat::ModifyStatPoint(int _Value)
-{
-	m_StatPoint += _Value;
-	m_UsedStatPoint  -= _Value;
-
-	m_StatPoint = FMath::Clamp<int>(m_StatPoint, 0,  m_pStat->GetStatPoint());
-	m_UsedStatPoint = FMath::Clamp<int>(m_UsedStatPoint, 0, m_pStat->GetStatPoint());
-
-	UpdateWidget(m_StatPoint);
-}
-
 
 void UWidget_Stat::GenerateStatEntries()
 {
@@ -81,9 +65,10 @@ void UWidget_Stat::_OnCloseButtonClicked()
 	}
 }
 
-
 void UWidget_Stat::_OnApplyButtonClicked()
 {
+	m_pStat->Apply();
+
 	for (int i = 0; i < m_pStatList->GetChildrenCount(); ++i)
 	{
 		UWidget_StatEntry* pEntryWidget = Cast<UWidget_StatEntry>(m_pStatList->GetChildAt(i));
@@ -92,9 +77,6 @@ void UWidget_Stat::_OnApplyButtonClicked()
 		pEntryWidget->UpdateButtons();
 		pEntryWidget->UpdateStatColor();
 	}
-
-	m_pStat->ModifyStatPoint(-m_UsedStatPoint);
-	m_UsedStatPoint =  0;
 }
 
 void UWidget_Stat::_OnCancelButtonClicked()
@@ -105,7 +87,7 @@ void UWidget_Stat::_OnCancelButtonClicked()
 		pEntryWidget->ResetStat();
 	}
 
-	ModifyStatPoint(m_UsedStatPoint);
+	m_pStat->Cancel();
 }
 
 

@@ -6,7 +6,7 @@
 
 
 
-void UOperation_Slot::InitOperation(UWidget_InventorySlot* _pDraggedSlot)
+void UOperation_Slot::InitOperation(UUserWidget* _pDraggedSlot)
 {
 	m_pDraggedSlot = _pDraggedSlot;
 }

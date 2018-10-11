@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/Component_Base.h"
 #include "Component_Equipment.generated.h"
 
 class UWidget_Equipment;
@@ -28,7 +28,7 @@ public :
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTA_API UComponent_Equipment : public UActorComponent
+class PROJECTA_API UComponent_Equipment : public UComponent_Base
 {
 	GENERATED_BODY()
 
@@ -41,8 +41,6 @@ protected:
 	virtual void BeginPlay() override;
 
 protected :
-	UWidget_Equipment* m_pEquipmentWidget;
-
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	FEquipmentSlot_Info m_WeaponSlot;
 
@@ -64,13 +62,9 @@ protected :
 	int m_RingIndex;
 	int m_EarringIndex;
 
-	bool m_bIsOpen;
-
 public :
-	void InitComponent(UWidget_Equipment* _pWidget);
-
-	void Open();
-	void Close();
+	virtual void InitComponent(UWidget_Base* _pWidget) override;
+	virtual void UpdateComponent() override;
 
 	bool OnEquip(AItem_Equipment* _pEquipment);
 
@@ -82,8 +76,6 @@ public :
 	
 	FORCEINLINE const TArray<FEquipmentSlot_Info>& GetRingSlots()    const { return m_RingSlots; }
 	FORCEINLINE const TArray<FEquipmentSlot_Info>& GetEarringSlots() const { return m_EarringSlots; }
-
-	FORCEINLINE const bool& GetIsOpen() const { return m_bIsOpen; }
 
 private :
 	bool _EquipWeapon(AItem_Equipment* _pEquipment);

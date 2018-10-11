@@ -52,6 +52,8 @@ protected :
 	FStat_Info m_StatInfo;
 	UComponent_Stat* m_pStat;
 
+	int m_IncreaseCount;
+
 public :
 	void InitWidget(const EStat_Types& _Type, UComponent_Stat* _pStat);
 	void UpdateWidget(const FStat_Info& _StatInfo);
@@ -66,6 +68,7 @@ public :
 	/* Get */
 	FORCEINLINE const EStat_Types& GetStatType() const { return m_StatType; }
 	FORCEINLINE const FStat_Info& GetStatInfo() const { return m_StatInfo; }
+
 
 protected :
 	void _IncreaseStat();
