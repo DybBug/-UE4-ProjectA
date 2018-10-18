@@ -82,12 +82,9 @@ void UComponent_SkillTree::UseSkill()
 {
 	if (m_SkillList[m_Combo])
 	{
-		if (!m_SkillList[m_Combo]->GetIsUsing())
-		{
-			StopResetCombo();
-			APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
-			m_SkillList[m_Combo]->Use(this);
-		}
+		StopResetCombo();
+		APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
+		m_SkillList[m_Combo]->Use();
 	}
 }
 

@@ -2,6 +2,14 @@
 
 #include "Skill_Active.h"
 
+void ASkill_Active::Use()
+{
+	if (!m_bOnAnimation)
+	{
+		AnimationStart();
+	}
+}
+
 
 
 

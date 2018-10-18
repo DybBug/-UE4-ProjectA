@@ -12,6 +12,7 @@
 #include <Components/TextBlock.h>
 #include <Components/Border.h>
 #include <Components/Image.h>
+#include <Materials/MaterialInstanceDynamic.h>
 
 #define LOCTEXT_NAMESPACE "Format"
 
@@ -26,19 +27,24 @@ void UWidget_HotkeySlot::NativePreConstruct()
 void UWidget_HotkeySlot::NativeConstruct()
 {
 	m_pNum->SetVisibility(ESlateVisibility::Hidden);
+	m_pCooldownImage->SetVisibility(ESlateVisibility::Hidden);
+	m_pCooldownText->SetVisibility(ESlateVisibility::Hidden);
+
+	m_pDynamicMaterial = m_pCooldownImage->GetDynamicMaterial();
 }
 
-void UWidget_HotkeySlot::InitWidget(const FKey& _Key, int _Index)
+void UWidget_HotkeySlot::InitWidget(UWidget_Hotkey* _pWidget, const FKey& _Key, int _Index)
 {
+	m_pHotkeyWidget = _pWidget;
 	m_Hotkey = _Key;
 	m_Index = _Index;
 }
 
 void UWidget_HotkeySlot::UpdateWidget()
 {
-	if (m_pConnectedWidget)
+	if (m_pAssignedWidget)
 	{
-		if (UWidget_InventorySlot* pInventorySlot = Cast<UWidget_InventorySlot>(m_pConnectedWidget))
+		if (UWidget_InventorySlot* pInventorySlot = Cast<UWidget_InventorySlot>(m_pAssignedWidget))
 		{
 			if (pInventorySlot->GetSlotInfo()->pItem)
 			{
@@ -58,11 +64,11 @@ void UWidget_HotkeySlot::UpdateWidget()
 			}
 			else
 			{
-				m_pConnectedWidget = nullptr;
+				m_pAssignedWidget = nullptr;
 				UpdateWidget();
 			}
 		}
-		else if (UWidget_SkillEntry* pSkillEntry = Cast<UWidget_SkillEntry>(m_pConnectedWidget))
+		else if (UWidget_SkillEntry* pSkillEntry = Cast<UWidget_SkillEntry>(m_pAssignedWidget))
 		{
 			ASkill_Buff* pSkill = Cast<ASkill_Buff>(pSkillEntry->GetSkill());
 			if (pSkill)
@@ -85,9 +91,9 @@ void UWidget_HotkeySlot::UpdateWidget()
 
 void UWidget_HotkeySlot::Use()
 {
-	if (m_pConnectedWidget)
+	if (m_pAssignedWidget)
 	{
-		if (UWidget_InventorySlot* pInventorySlot = Cast<UWidget_InventorySlot>(m_pConnectedWidget))
+		if (UWidget_InventorySlot* pInventorySlot = Cast<UWidget_InventorySlot>(m_pAssignedWidget))
 		{
 			AItem_Base* pItem = pInventorySlot->GetSlotInfo()->pItem;
 			if (pItem)
@@ -99,7 +105,32 @@ void UWidget_HotkeySlot::Use()
 				}
 			}
 		}
+		else if (UWidget_SkillEntry* pSkillEntry = Cast<UWidget_SkillEntry>(m_pAssignedWidget))
+		{
+			ASkill_Base* pSkill = pSkillEntry->GetSkill();
+			if (pSkill)
+			{
+				pSkill->Use();
+			}
+		}
 	}
+}
+
+void UWidget_HotkeySlot::UpdateCooldown(float _Percent)
+{
+	m_pDynamicMaterial->SetScalarParameterValue("Percent", _Percent);
+}
+
+void UWidget_HotkeySlot::ActivateCooldown()
+{
+	m_pIcon->SetColorAndOpacity(FLinearColor(FColor(0x545454FF)));
+	m_pCooldownImage->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+}
+
+void UWidget_HotkeySlot::DetactiveCooldown()
+{
+	m_pIcon->SetColorAndOpacity(FLinearColor(FColor(0xFFFFFFFF)));
+	m_pCooldownImage->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UWidget_HotkeySlot::NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
@@ -143,7 +174,13 @@ bool UWidget_HotkeySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDr
 		{
 			if (pInventorySlot->GetSlotInfo()->pItem->GetInfo().bCanUsed)
 			{
-				m_pConnectedWidget = pInventorySlot;
+				if (UWidget_HotkeySlot* pHotkeySlot = pInventorySlot->GetHotkeySlotWidget())
+				{
+					pHotkeySlot->SetAssignedWidget(nullptr);
+					pHotkeySlot->UpdateWidget();
+				}
+				pInventorySlot->SetHotkeySlotWidget(this);
+				m_pAssignedWidget = pInventorySlot;
 				UpdateWidget();
 				bSuccess = true;
 			}
@@ -153,7 +190,8 @@ bool UWidget_HotkeySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDr
 		{
 			if (ASkill_Buff* pSkill = Cast<ASkill_Buff>(pSkillEntry->GetSkill()))
 			{
-				m_pConnectedWidget = pSkillEntry;
+				pSkill->SetHotkeySlotWidget(this);
+				m_pAssignedWidget = pSkillEntry;
 				UpdateWidget();
 				bSuccess = true;
 			}

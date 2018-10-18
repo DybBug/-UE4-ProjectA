@@ -18,5 +18,7 @@ protected :
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	float Damage = 0.f;
 	
+public :
+	virtual void Use() override;
 	
 };

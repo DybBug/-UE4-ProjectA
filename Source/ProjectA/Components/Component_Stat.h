@@ -9,6 +9,7 @@
 
 class UWidget_StatBar;
 class UWidget_StatEntry;
+class ASkill_Buff;
 
 USTRUCT(BlueprintType)
 struct FStat_Info
@@ -63,6 +64,8 @@ protected :
 
 	TArray<UWidget_StatEntry*> m_pEntryWidgets;
 
+	TArray<ASkill_Buff*> m_Buffs;
+
 	UPROPERTY(VisibleAnywhere, Category = "Configuration")
 	TMap<EStat_Types, UWidget_StatBar*> m_StatBarWidgets;
 
@@ -78,6 +81,10 @@ public :
 	void ModifyIncreasePerLevelUpByType(const EStat_Types& _Type, float _Value = 0.f);
 	void ModifyIncreasePerPointByType(const EStat_Types& _Type, float _Value = 0.f);
 
+	void AddBuff(ASkill_Buff* _pBuff);
+	void RemoveBuff(ASkill_Buff* _pBuff);
+
+	void ApplyStat(EStat_Types _Type, const FStat_Info& _Stat);
 	void Apply();
 	void Cancel();
 
@@ -89,8 +96,5 @@ public :
 
 	FORCEINLINE const TMap<EStat_Types, FStat_Info>& GetStats() const { return m_Stats; }
 	FORCEINLINE const FStat_Info& GetStat(EStat_Types _Type) const { return m_Stats[_Type]; }
-
-	/* Set */
-	FORCEINLINE void SetStat(EStat_Types _Type, const FStat_Info& _Stat) { m_Stats[_Type] = _Stat; }
 };
 

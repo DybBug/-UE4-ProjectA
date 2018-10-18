@@ -1,10 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Component_Stat.h"
+#include "Widgets/Widget_Main.h"
 #include "Widgets/Stat/Widget_Stat.h"
 #include "Widgets/Stat/Widget_StatEntry.h"
 #include "Widgets/Misc/Widget_StatBar.h"
+#include "Players/Player_Character.h"
 #include "Items/Item_Potion.h"
+#include "Skills/Skill_Buff.h"
 
 
 // Sets default values for this component's properties
@@ -39,6 +42,10 @@ void UComponent_Stat::InitComponent(UWidget_Base* _pWidget)
 	m_StatBarWidgets.Empty();
 	m_pEntryWidgets.Empty();
 
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
+	pPlayer->GetMainWidget()->UpdateStatBar(EStat_Types::Health, m_Stats[EStat_Types::Health].CurrentValue, m_Stats[EStat_Types::Health].MaxValue);
+	pPlayer->GetMainWidget()->UpdateStatBar(EStat_Types::Mana, m_Stats[EStat_Types::Mana].CurrentValue, m_Stats[EStat_Types::Mana].MaxValue);
+	pPlayer->GetMainWidget()->UpdateStatBar(EStat_Types::Stamina, m_Stats[EStat_Types::Stamina].CurrentValue, m_Stats[EStat_Types::Stamina].MaxValue);
 	Cast<UWidget_Stat>(m_pWidget)->GenerateStatEntries();
 }
 
@@ -68,19 +75,27 @@ void UComponent_Stat::ModifyStatPoint(float _Value)
 
 void UComponent_Stat::ModifyMaxValueByType(const EStat_Types& _Type, float _Value)
 {
-	m_Stats[_Type].MaxValue += _Value;
 	if (m_pEntryWidgets.IsValidIndex((uint8)_Type))
 	{
+		m_Stats[_Type].MaxValue += _Value;
+
+		APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
+		pPlayer->GetMainWidget()->UpdateStatBar(_Type, m_Stats[_Type].CurrentValue, m_Stats[_Type].MaxValue);
+
 		m_pEntryWidgets[(uint8)_Type]->UpdateWidget(m_Stats[_Type]);
 	}
 }
 
 void UComponent_Stat::ModifyCurrentValueByType(const EStat_Types& _Type, float _Value)
 {
-	m_Stats[_Type].CurrentValue += _Value;
 	if (m_pEntryWidgets.IsValidIndex((uint8)_Type))
 	{
-		m_pEntryWidgets[(uint8)_Type]->UpdateWidget(m_Stats[_Type]);
+		m_Stats[_Type].CurrentValue += _Value;	
+
+		APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
+		pPlayer->GetMainWidget()->UpdateStatBar(_Type, m_Stats[_Type].CurrentValue, m_Stats[_Type].MaxValue);
+
+		m_pEntryWidgets[(uint8)_Type]->UpdateWidget(m_Stats[_Type]);	
 	}
 }
 
@@ -100,6 +115,47 @@ void UComponent_Stat::ModifyIncreasePerPointByType(const EStat_Types& _Type, flo
 	{
 		m_pEntryWidgets[(uint8)_Type]->UpdateWidget(m_Stats[_Type]);
 	}
+}
+
+void UComponent_Stat::AddBuff(ASkill_Buff* _pBuff)
+{
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
+	float DurationTime = _pBuff->GetBuffStageAt(_pBuff->GetInfo().CurrentLevel - 1).DurationTime;
+
+	for (int i = 0; i < m_Buffs.Num(); ++i)
+	{
+		if (m_Buffs[i]->GetClass() == _pBuff->GetClass())
+		{
+			m_Buffs[i]->Reset();
+			pPlayer->GetMainWidget()->ResetBuffAt(i);
+			return;
+		}
+	}
+
+	m_Buffs.Add(_pBuff);	
+	pPlayer->GetMainWidget()->AddBuff(_pBuff);
+}
+
+void UComponent_Stat::RemoveBuff(ASkill_Buff* _pBuff)
+{
+	for (int i = 0; i < m_Buffs.Num(); ++i)
+	{
+		if (m_Buffs[i]->GetClass() == _pBuff->GetClass())
+		{
+			m_Buffs.RemoveAt(i);
+			APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
+			pPlayer->GetMainWidget()->RemoveBuffAt(i);
+			return;
+		}
+	}
+}
+
+void UComponent_Stat::ApplyStat(EStat_Types _Type, const FStat_Info& _Stat)
+{
+	m_Stats[_Type] = _Stat;
+
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
+	pPlayer->GetMainWidget()->UpdateStatBar(_Type, m_Stats[_Type].CurrentValue, m_Stats[_Type].MaxValue);
 }
 
 void UComponent_Stat::Apply()

@@ -15,6 +15,7 @@ class UTextBlock;
 class AItem_Base;
 class UComponent_Inventory;
 class UWidget_Detail;
+class UWidget_HotkeySlot;
 
 struct FInventorySlot_Info;
 
@@ -47,6 +48,8 @@ protected :
 
 	UWidget_Detail* m_pDetailWidget = nullptr;
 
+	UWidget_HotkeySlot* m_pHotkeySlotWidget = nullptr;
+
 	FInventorySlot_Info* m_pSlotInfo = nullptr;
 
 public :
@@ -58,6 +61,10 @@ public :
 
 	/* Get */
 	FORCEINLINE FInventorySlot_Info* const& GetSlotInfo() const { return m_pSlotInfo; }
+	FORCEINLINE UWidget_HotkeySlot* const& GetHotkeySlotWidget() const { return m_pHotkeySlotWidget; }
+
+	/* Set */
+	FORCEINLINE void SetHotkeySlotWidget(UWidget_HotkeySlot* _pWidget) { m_pHotkeySlotWidget = _pWidget; }
 
 
 protected :

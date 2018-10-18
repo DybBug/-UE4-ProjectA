@@ -12,17 +12,18 @@
 class UTextBlock;
 class UBorder;
 class UImage;
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class PROJECTA_API UWidget_HotkeySlot : public UUserWidget
 {
 	GENERATED_BODY()
-	
-public :
+
+public:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 
-protected :
+protected:
 	UPROPERTY()
 	UTextBlock* m_pHotkeyText;
 
@@ -36,25 +37,48 @@ protected :
 	UTextBlock* m_pNum;
 
 	UPROPERTY()
+	UImage* m_pCooldownImage;
+
+	UPROPERTY()
+	UTextBlock* m_pCooldownText;
+
+	UPROPERTY()
 	FLinearColor m_DefaultColor;
 
 	UPROPERTY()
 	int m_Index;
 
+	UPROPERTY()
+	UMaterialInstanceDynamic* m_pDynamicMaterial;
+
 	FKey m_Hotkey;
 
-	UUserWidget* m_pConnectedWidget;
+	UWidget_Hotkey* m_pHotkeyWidget;
 
-public :
-	void InitWidget(const FKey& _Key, int _Index);
+	UUserWidget* m_pAssignedWidget;
+
+	float m_Percent;
+
+public:
+	void InitWidget(UWidget_Hotkey* _pWidget, const FKey& _Key, int _Index);
 	void UpdateWidget();
 	void Use();
+
+	void UpdateCooldown(float _Percent);
+	void ActivateCooldown();
+	void DetactiveCooldown();
 
 	/* Get */
 	FORCEINLINE const int& GetIndex() const { return m_Index; }
 
+
+	FORCEINLINE UUserWidget* const& GetAssignedWidget() const { return m_pAssignedWidget; }
+
 	/* Set */
 	FORCEINLINE void SetHotkey(const FKey& _Key) { m_Hotkey = _Key; }
+
+	FORCEINLINE void SetAssignedWidget(UUserWidget* _pWidget) { m_pAssignedWidget = _pWidget; }
+
 
 protected :
 	virtual void NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;

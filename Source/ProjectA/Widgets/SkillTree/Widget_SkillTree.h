@@ -12,7 +12,6 @@
 class UButton;
 class UTextBlock;
 class UWidget_Main;
-class UWidget_SkillDetail;
 class UWidget_ComboSlot;
 class UComponent_SkillTree;
 class UWidgetSwitcher;
@@ -41,17 +40,10 @@ protected :
 	UButton* m_pBuffButton;
 
 	UPROPERTY()
-	UButton* m_pPassiveButton;
-
-	UPROPERTY()
 	UWidgetSwitcher* m_pSkillCategoryList;
 
 	UPROPERTY()
 	UHorizontalBox* m_pComboList;
-
-
-	UPROPERTY(EditAnywhere, Category = "Configuration")
-	TSubclassOf<UWidget_SkillDetail> m_SkillDetailWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TSubclassOf<UWidget_ComboSlot> m_ComboSlotWidgetClass;
@@ -59,7 +51,6 @@ protected :
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	int m_ComboCount;
 
-	UWidget_SkillDetail* m_pSkillDetailWidget;
 
 	
 public :
@@ -67,7 +58,6 @@ public :
 	virtual void UpdateWidget() override;
 
 	/* Get */
-	FORCEINLINE UWidget_SkillDetail* const& GetSkillDetailWidget() const { return m_pSkillDetailWidget; }
 	FORCEINLINE const int& GetComboCount() const { return m_ComboCount; }
 
 protected :
@@ -84,9 +74,4 @@ private:
 
 	UFUNCTION()
 	void _OnBuffButtonClicked();
-
-	UFUNCTION()
-	void _OnPassiveButtonClicked();
-
-
 };

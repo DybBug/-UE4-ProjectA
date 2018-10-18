@@ -5,6 +5,7 @@
 #include "Operations/Operation_Slot.h"
 #include "Items/Item_Base.h"
 #include "Widgets/Misc/Widget_Detail.h"
+#include "Widgets/Hotkey/Widget_HotkeySlot.h"
 #include "Players/Player_Character.h"
 
 #include <Components/Border.h>
@@ -53,6 +54,11 @@ void UWidget_InventorySlot::UpdateWidget()
 			m_pIcon->SetBrushFromTexture(nullptr);
 			m_pAmountText->SetVisibility(ESlateVisibility::Hidden);
 		}
+
+		if (m_pHotkeySlotWidget)
+		{
+			m_pHotkeySlotWidget->UpdateWidget();
+		}
 	}
 }
 
@@ -88,7 +94,7 @@ FReply UWidget_InventorySlot::NativeOnMouseButtonDown(const FGeometry& InGeometr
 			{
 				if(m_pSlotInfo->pItem->OnUse(m_pSlotInfo))
 				{
-					UpdateWidget();
+					UpdateWidget();					
 				}
 			}
 
@@ -119,17 +125,17 @@ bool UWidget_InventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDra
 		FInventorySlot_Info* pFromSlotInfo = pFromSlot->GetSlotInfo();
 		if (!m_pSlotInfo->pItem)
 		{
-			m_pInventory->MoveItem(m_pSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
+			m_pInventory->MoveItem(m_pSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);			
 		}
 		else
 		{
 			if ((pFromSlot != this) && (m_pSlotInfo->pItem->GetClass() == pFromSlotInfo->pItem->GetClass()))
 			{
-				m_pInventory->CombineItem(m_pSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
+				m_pInventory->CombineItem(m_pSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);				
 			}
 			else
 			{
-				m_pInventory->SwapItem(m_pSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);
+				m_pInventory->SwapItem(m_pSlotInfo->SlotIndex, pFromSlotInfo->SlotIndex);				
 			}
 		}	
 		return true;

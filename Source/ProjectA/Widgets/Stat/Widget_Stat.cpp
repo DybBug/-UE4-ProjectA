@@ -72,7 +72,7 @@ void UWidget_Stat::_OnApplyButtonClicked()
 	for (int i = 0; i < m_pStatList->GetChildrenCount(); ++i)
 	{
 		UWidget_StatEntry* pEntryWidget = Cast<UWidget_StatEntry>(m_pStatList->GetChildAt(i));
-		m_pStat->SetStat(pEntryWidget->GetStatType(), pEntryWidget->GetStatInfo());
+		m_pStat->ApplyStat(pEntryWidget->GetStatType(), pEntryWidget->GetStatInfo());
 
 		pEntryWidget->UpdateButtons();
 		pEntryWidget->UpdateStatColor();

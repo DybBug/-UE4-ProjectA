@@ -17,7 +17,7 @@ void UWidget_Hotkey::NativePreConstruct()
 		for (int i = 0; i < m_HotkeyList.Num(); ++i)
 		{
 			UWidget_HotkeySlot* pWidget = CreateWidget<UWidget_HotkeySlot>(this, m_HotkeySlotClass);
-			pWidget->InitWidget(m_HotkeyList[i], i);
+			pWidget->InitWidget(this, m_HotkeyList[i], i);
 
 			UUniformGridSlot* pSlot = m_pHotkeySlotList->AddChildToUniformGrid(pWidget);
 			pSlot->SetColumn(i % m_ColumnCount);
@@ -31,4 +31,5 @@ void UWidget_Hotkey::PressKey(int _Index)
 	UWidget_HotkeySlot* pHotkeySlot = Cast<UWidget_HotkeySlot>(m_pHotkeySlotList->GetChildAt(_Index));
 	pHotkeySlot->Use();
 }
+
 

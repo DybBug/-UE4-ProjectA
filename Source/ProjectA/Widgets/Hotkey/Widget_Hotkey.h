@@ -11,6 +11,7 @@
  */
 class UUniformGridPanel;
 class UWidget_HotkeySlot;
+class UComponent_SkillTree;
 
 UCLASS()
 class PROJECTA_API UWidget_Hotkey : public UUserWidget
@@ -32,6 +33,7 @@ protected :
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	TArray<FKey> m_HotkeyList;
+
 
 public :
 	void PressKey(int _Index);

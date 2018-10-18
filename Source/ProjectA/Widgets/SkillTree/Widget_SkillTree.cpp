@@ -2,7 +2,6 @@
 
 #include "Widget_SkillTree.h"
 #include "Widgets/Widget_Main.h"
-#include "Widget_SkillDetail.h"
 #include "Widget_SkillCategory.h"
 #include "Widget_ComboSlot.h"
 #include "Components/Component_SkillTree.h"
@@ -31,7 +30,6 @@ void UWidget_SkillTree::NativeConstruct()
 	m_pCloseButton->OnClicked.AddDynamic(this, &UWidget_SkillTree::_OnCloseButtonClicked);
 	m_pActiveButton->OnClicked.AddDynamic(this, &UWidget_SkillTree::_OnActiveButtonClicked);
 	m_pBuffButton->OnClicked.AddDynamic(this, &UWidget_SkillTree::_OnBuffButtonClicked);
-	m_pPassiveButton->OnClicked.AddDynamic(this, &UWidget_SkillTree::_OnPassiveButtonClicked);
 }
 
 void UWidget_SkillTree::InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComponent)
@@ -39,11 +37,6 @@ void UWidget_SkillTree::InitWidget(UWidget_Main* _pMain, UComponent_Base* _pComp
 	UWidget_Base::InitWidget(_pMain, _pComponent);
 
 	UComponent_SkillTree* pComp = Cast<UComponent_SkillTree>(m_pComponent);
-
-	if (m_SkillDetailWidgetClass)
-	{
-		m_pSkillDetailWidget = CreateWidget<UWidget_SkillDetail>(this, UWidget_SkillDetail::StaticClass());
-	}
 
 	for (int i = 0; i < m_pSkillCategoryList->GetChildrenCount(); ++i)
 	{
@@ -112,12 +105,6 @@ void UWidget_SkillTree::_OnBuffButtonClicked()
 	pCategoryWidget->UpdateWidget();
 }
 
-void UWidget_SkillTree::_OnPassiveButtonClicked()
-{
-	m_pSkillCategoryList->SetActiveWidgetIndex(2);
-	UWidget_SkillCategory* pCategoryWidget = Cast<UWidget_SkillCategory>(m_pSkillCategoryList->GetActiveWidget());
-	pCategoryWidget->UpdateWidget();
-}
 
 
 

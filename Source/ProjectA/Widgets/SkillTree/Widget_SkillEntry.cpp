@@ -90,7 +90,7 @@ void UWidget_SkillEntry::NativeOnDragDetected(const FGeometry& InGeometry, const
 {
 	UOperation_Slot* pOper_Slot = NewObject<UOperation_Slot>(UOperation_Slot::StaticClass());
 	pOper_Slot->InitOperation(this);
-	pOper_Slot->DefaultDragVisual = this;
+	pOper_Slot->DefaultDragVisual = m_pIcon;
 	pOper_Slot->Pivot = EDragPivot::MouseDown;
 
 	OutOperation = pOper_Slot;	
@@ -101,6 +101,7 @@ void UWidget_SkillEntry::_Learning()
 	if (!m_pSkill)
 	{
 		m_pSkill = GetWorld()->SpawnActor<ASkill_Base>(m_SkillClass);
+		m_pSkill->InitSkill(m_pSkillTree);
 		m_pSkill->Upgrade();
 
 		int SkillLevel = m_pSkill->GetInfo().CurrentLevel;
@@ -125,6 +126,8 @@ void UWidget_SkillEntry::_Upgrade()
 	m_pLevelText->SetText(FText::AsNumber(SkillLevel));
 
 	m_pSkillTree->AddSkillPoint(-1);
+
+	_Active();
 }
 
 void UWidget_SkillEntry::_Downgrade()
@@ -135,19 +138,29 @@ void UWidget_SkillEntry::_Downgrade()
 
 	m_pLevelText->SetText(FText::AsNumber(SkillLevel));
 
+	m_pSkillTree->AddSkillPoint(1);
+
+	m_pPlusButton->SetIsEnabled(true);
+
 	if (SkillLevel == 0)
 	{
 		m_pSkill->Destroy();
 		m_pSkill = nullptr;
 		m_pLevelText->SetVisibility(ESlateVisibility::Hidden);
 
+		if (m_pPrevEntry)
+		{
+			m_pPrevEntry->UpdateWidget();
+		}
+
 		for (auto& NextEntry : m_pNextEntries)
 		{
 			NextEntry->SetCanLearnt(false);
+			NextEntry->UpdateWidget();
 		}
 	}
 
-	m_pSkillTree->AddSkillPoint(1);
+	_Active();
 }
 
 bool UWidget_SkillEntry::_Active()
@@ -167,17 +180,18 @@ bool UWidget_SkillEntry::_Active()
 				// #. - 버튼 활성/비활성.
 				if (m_pSkill->GetInfo().CurrentLevel == 1)
 				{
+					// #. 다음 스킬이 있을 경우.
 					for (auto& NextEntry : m_pNextEntries)
 					{
 						if (NextEntry->GetSkill())
 						{
 							m_pMinusButton->SetIsEnabled(false);
-						}
-						else
-						{
-							m_pMinusButton->SetIsEnabled(true);
-						}
+							return true;
+						}						
 					}
+
+					// #. 다음 스킬이 없을 경우.
+					m_pMinusButton->SetIsEnabled(true);
 				}
 				else
 				{

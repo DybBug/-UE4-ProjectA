@@ -27,7 +27,8 @@ public :
 	virtual void UpdateWidget();
 
 	/* Get */
-	FORCEINLINE UComponent_Base* const& GetComponent() const { return m_pComponent; }
+	FORCEINLINE UWidget_Main*    const& GetMainWidget() const { return m_pMainWidget; }
+	FORCEINLINE UComponent_Base* const& GetComponent()  const { return m_pComponent; }
 
 	/* Set */
 	FORCEINLINE void SetMainWidget(UWidget_Main* _pMainWidget)  { m_pMainWidget = _pMainWidget; }

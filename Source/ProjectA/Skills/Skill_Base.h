@@ -10,6 +10,8 @@ class UAnimMontage;
 class APlayer_Character;
 class UTimelineComponent;
 class UComponent_SkillTree;
+class UWidget_HotkeySlot;
+
 
 USTRUCT(BlueprintType)
 struct FSkill_Info
@@ -36,7 +38,10 @@ public :
 	FText Description;
 
 	UPROPERTY(EditAnywhere, Category = "Skill_Info")
-	bool bCanCasting;
+	float CastingTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	float CooldownTime = 0.0f;
 };
 
 
@@ -56,26 +61,60 @@ protected:
 
 protected :
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UTimelineComponent* m_pSkillTimeline;
+	UTimelineComponent* m_pAnimationTimeline;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UTimelineComponent* m_pCastingTimeline;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UTimelineComponent* m_pCooldownTimeline;	
 
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	FSkill_Info m_Info;
 
-	UComponent_SkillTree* m_pSkill;
+	UComponent_SkillTree* m_pSkillTree;
 
-	bool m_bIsUsing;
+	APlayer_Character* m_pPlayer;
+
+	UWidget_HotkeySlot* m_pHotkeySlotWidget;
+
+	bool m_bOnAnimation;
+	bool m_bOnCasting;
+	bool m_bOnCooldown;
 
 public :
-	void Use(UComponent_SkillTree* _pSkill);
+	void InitSkill(UComponent_SkillTree* _SkillTree);
+	virtual void Use();
 	void Upgrade();
 	void Downgrade();
 
+	void AnimationStart();
+	void CastingStart();
+	void CooldownStart();
+
 	/* Get */
 	FORCEINLINE const FSkill_Info& GetInfo() const { return m_Info; }
-	FORCEINLINE const bool& GetIsUsing() const { return m_bIsUsing; }
+	FORCEINLINE const bool& GetOnAnimation() const { return m_bOnAnimation; }
+
+	/* Set */
+	FORCEINLINE void SetHotkeySlotWidget(UWidget_HotkeySlot* _pWidget) { m_pHotkeySlotWidget = _pWidget; }
 
 protected :
+	void _SetupTimelines();
+
 	UFUNCTION()
-	void _FinishSkill();
+	virtual void _AnimationFinish();
+
+	UFUNCTION()
+	virtual void _CastingTick();
+
+	UFUNCTION()
+	virtual void _CastingFinish();
+
+	UFUNCTION()
+	virtual void _CooldownTick();
+
+	UFUNCTION()
+	virtual void _CooldownFinish();
 	
 };

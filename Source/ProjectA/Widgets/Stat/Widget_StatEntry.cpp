@@ -60,10 +60,10 @@ void UWidget_StatEntry::UpdateWidget(const FStat_Info& _StatInfo)
 		m_pMaxText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 		m_pSlashText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 
-		m_pMaxText->SetText(FText::AsNumber(m_StatInfo.MaxValue));
+		m_pMaxText->SetText(FText::AsNumber((int)m_StatInfo.MaxValue));
 	}
 
-	m_pCurrentText->SetText(FText::AsNumber(m_StatInfo.CurrentValue));
+	m_pCurrentText->SetText(FText::AsNumber((int)m_StatInfo.CurrentValue));
 }
 
 void UWidget_StatEntry::UpdateButtons()
@@ -140,10 +140,10 @@ void UWidget_StatEntry::OnActivePlusButton(bool _bActive, ESlateVisibility _Visi
 	 {
 		 m_StatInfo.MaxValue += m_StatInfo.IncreasePerPoint;
 
-		 m_pMaxText->SetText(FText::AsNumber(m_StatInfo.MaxValue));
+		 m_pMaxText->SetText(FText::AsNumber((int)m_StatInfo.MaxValue));
 	 }
 
-	 m_pCurrentText->SetText(FText::AsNumber(m_StatInfo.CurrentValue));
+	 m_pCurrentText->SetText(FText::AsNumber((int)m_StatInfo.CurrentValue));
 	 m_IncreaseCount++;
  }
 
@@ -157,10 +157,10 @@ void UWidget_StatEntry::OnActivePlusButton(bool _bActive, ESlateVisibility _Visi
 	 {
 		 m_StatInfo.MaxValue -= m_StatInfo.IncreasePerPoint;
 
-		 m_pMaxText->SetText(FText::AsNumber(m_StatInfo.MaxValue));
+		 m_pMaxText->SetText(FText::AsNumber((int)m_StatInfo.MaxValue));
 	 }
 
-	 m_pCurrentText->SetText(FText::AsNumber(m_StatInfo.CurrentValue));
+	 m_pCurrentText->SetText(FText::AsNumber((int)m_StatInfo.CurrentValue));
 	 m_IncreaseCount--;
  }
 
@@ -190,7 +190,7 @@ void UWidget_StatEntry::OnActivePlusButton(bool _bActive, ESlateVisibility _Visi
 	 // #. 사용 가능한 스탯 포인트가 있을 경우.
 	if (m_pStat->GetStatPoint())
 	{
-		if (m_StatInfo.MaxValue == 0)
+		if (m_StatInfo.MaxValue <= 0)
 		{
 			if (m_StatInfo.CurrentValue == m_pStat->GetStat(m_StatType).CurrentValue)
 			{
