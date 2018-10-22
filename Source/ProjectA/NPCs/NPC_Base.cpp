@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "NPC_Base.h"
-#include"ProjectA.h"
+#include "ProjectA.h"
+#include "Components/Component_Quest.h"
 
 #include <Components/ArrowComponent.h>
 #include <Components/SkeletalMeshComponent.h>
@@ -25,7 +26,6 @@ ANPC_Base::ANPC_Base()
 
 	m_pMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	m_pMesh->SetupAttachment(RootComponent);
-
 }
 
 // Called when the game starts or when spawned

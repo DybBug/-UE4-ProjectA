@@ -36,7 +36,7 @@ enum class EStat_Types : uint8
 UENUM(BlueprintType)
 enum class EEquipment_Types : uint8
 {
-	None            UMETA(DisplayNamem = "알 수 없음"),
+	None            UMETA(DisplayName = "알 수 없음"),
 	Weapon          UMETA(DisplayName = "무기"),
 	SecondaryWeapon UMETA(DisplayName = "보조 무기"),
 	Necklace        UMETA(DisplayName = "목걸이"),
@@ -46,3 +46,21 @@ enum class EEquipment_Types : uint8
 	Max
 };
 
+UENUM(BlueprintType)
+enum class EQuest_Categories : uint8
+{
+	Main_Quest UMETA(DisplayName = "메인 퀘스트"),
+	Sub_Quest  UMETA(DisplayName = "서브 퀘스트"),
+	Event      UMETA(DisplayName = "이벤트"),
+	Max
+};
+
+UENUM(BlueprintType)
+enum class EGoal_Types : uint8
+{
+	Hunt    UMETA(DisplayName = "사냥"),
+	Collect UMETA(DisplayName = "수집"),
+	Talk    UMETA(DisplayName = "대화"),
+	Explore UMETA(DisplayName = "탐사"),
+	Max
+};

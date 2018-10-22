@@ -9,6 +9,10 @@
 class USkeletalMeshComponent;
 class UArrowComponent;
 class UCapsuleComponent;
+class UComponent_Quest;
+
+struct FQuest_Info;
+
 
 UCLASS()
 class PROJECTA_API ANPC_Base : public AActor
@@ -23,7 +27,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-protected :
+private :
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UArrowComponent* m_pArrow;
 
@@ -32,6 +36,10 @@ protected :
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USkeletalMeshComponent* m_pMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Configuration|Quest")
+	TArray<FQuest_Info> m_QuestInfo;
+
 	
 	
 };
