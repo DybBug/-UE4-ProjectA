@@ -106,12 +106,15 @@ void APlayer_Controller::_Interact()
 	FVector Start = m_pPlayer->GetCamera()->GetComponentLocation();
 	FVector End = Start + (Direction * 1500.f);
 
-	if (GetWorld()->LineTraceSingleByChannel(Result, Start, End, ECollisionChannel::ECC_Visibility))
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetPawn());
+
+	if (GetWorld()->LineTraceSingleByChannel(Result, Start, End, ECollisionChannel::ECC_Visibility, Params))
 	{
 		// #. 상호작용이 가능한 액터일 경우.
 		if (IInterface_Interaction* pInteract = Cast<IInterface_Interaction>(Result.GetActor()))
 		{
-			pInteract->GetPlayer() ? pInteract->UnInteract() : pInteract->OnInteract(m_pPlayer);
+			pInteract->GetInteractionUser() ? pInteract->UnInteract() : pInteract->OnInteract(m_pPlayer);
 			return;
 		}	
 	}
@@ -169,7 +172,7 @@ void APlayer_Controller::_MoveRight(float _Value)
 
 void APlayer_Controller::_LookUp(float _Value)
 {
-	if (_Value != 0.f)
+	if (_Value != 0.f && !m_pPlayer->GetIsLockOn())
 	{
 		FRotator CurrControlRot = GetControlRotation();
 		_Value = FMath::ClampAngle(CurrControlRot.Pitch + _Value, -40.f, 40.f);
@@ -181,7 +184,7 @@ void APlayer_Controller::_LookUp(float _Value)
 
 void APlayer_Controller::_Turn(float _Value)
 {
-	if (_Value != 0.f)
+	if (_Value != 0.f && !m_pPlayer->GetIsLockOn())
 	{
 		if (m_bIsLookAround)
 		{

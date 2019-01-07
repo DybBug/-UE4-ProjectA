@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Skill_Base.generated.h"
 
+class ACharacter;
 class UAnimMontage;
 class APlayer_Character;
 class UTimelineComponent;
@@ -19,28 +20,28 @@ struct FSkill_Info
 	GENERATED_BODY()
 
 public :
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	FName Name = TEXT("#Unknown");
-
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	UTexture2D* pIcon = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	UAnimMontage* pAnimMontage = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	int MaxLevel;
 
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	int CurrentLevel;
 
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	FText Description;
 
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	float CastingTime = 0.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Skill_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill_Info")
 	float CooldownTime = 0.0f;
 };
 
@@ -74,7 +75,7 @@ protected :
 
 	UComponent_SkillTree* m_pSkillTree;
 
-	APlayer_Character* m_pPlayer;
+	ACharacter* m_pCaster;
 
 	UWidget_HotkeySlot* m_pHotkeySlotWidget;
 
@@ -83,7 +84,7 @@ protected :
 	bool m_bOnCooldown;
 
 public :
-	void InitSkill(UComponent_SkillTree* _SkillTree);
+	void InitSkill(UComponent_SkillTree* _SkillTree, ACharacter* _pCaster);
 	virtual void Use();
 	void Upgrade();
 	void Downgrade();
@@ -91,6 +92,8 @@ public :
 	void AnimationStart();
 	void CastingStart();
 	void CooldownStart();
+
+	float AnimLength();
 
 	/* Get */
 	FORCEINLINE const FSkill_Info& GetInfo() const { return m_Info; }

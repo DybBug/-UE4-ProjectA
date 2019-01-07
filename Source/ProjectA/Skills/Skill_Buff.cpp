@@ -44,35 +44,44 @@ void ASkill_Buff::Reset()
 
 void ASkill_Buff::_ApplyBuff(EStat_Types _Type, float _Value)
 {
-	if (m_pPlayer->GetStat()->GetStat(_Type).MaxValue > 0.f)
-	{
-		m_pPlayer->GetStat()->ModifyMaxValueByType(_Type, _Value);
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(m_pCaster);
 
-		if (m_pPlayer->GetStat()->GetStat(_Type).CurrentValue <= m_pPlayer->GetStat()->GetStat(_Type).MaxValue)
+	if (pPlayer)
+	{
+		if (pPlayer->GetStat()->GetStat(_Type).MaxValue > 0.f)
 		{
-			return;
+			pPlayer->GetStat()->ModifyMaxValueByType(_Type, _Value);
+
+			if (pPlayer->GetStat()->GetStat(_Type).CurrentValue <= pPlayer->GetStat()->GetStat(_Type).MaxValue)
+			{
+				return;
+			}
 		}
+
+		pPlayer->GetStat()->ModifyCurrentValueByType(_Type, _Value);
 	}
-	
-	m_pPlayer->GetStat()->ModifyCurrentValueByType(_Type, _Value);
 }
 
 void ASkill_Buff::_CastingFinish()
 {
-	if (m_BuffStages.Num() > 0)
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(m_pCaster);
+	if (pPlayer)
 	{
-		float DurationTime = m_BuffStages[m_Info.CurrentLevel - 1].DurationTime;
-		m_pTimeline->SetTimelineLength(DurationTime);
-		m_pTimeline->PlayFromStart();
+		if (m_BuffStages.Num() > 0)
+		{
+			float DurationTime = m_BuffStages[m_Info.CurrentLevel - 1].DurationTime;
+			m_pTimeline->SetTimelineLength(DurationTime);
+			m_pTimeline->PlayFromStart();
 
-		m_pPlayer->GetStat()->AddBuff(this);
+			pPlayer->GetStat()->AddBuff(this);
 
-		EStat_Types Type = m_BuffStages[m_Info.CurrentLevel - 1].BuffType;
-		m_AppliedValue = m_BuffStages[m_Info.CurrentLevel - 1].Value;
-		_ApplyBuff(Type, m_AppliedValue);
+			EStat_Types Type = m_BuffStages[m_Info.CurrentLevel - 1].BuffType;
+			m_AppliedValue = m_BuffStages[m_Info.CurrentLevel - 1].Value;
+			_ApplyBuff(Type, m_AppliedValue);
+		}
+
+		ASkill_Base::_CastingFinish();
 	}
-
-	ASkill_Base::_CastingFinish();
 }
 
 void ASkill_Buff::_Tick()
@@ -95,11 +104,15 @@ void ASkill_Buff::_Tick()
 
 void ASkill_Buff::_Finish()
 {
-	EStat_Types Type = m_BuffStages[m_Info.CurrentLevel - 1].BuffType;
-	_ApplyBuff(Type, -m_AppliedValue);
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(m_pCaster);
+	if (pPlayer)
+	{
+		EStat_Types Type = m_BuffStages[m_Info.CurrentLevel - 1].BuffType;
+		_ApplyBuff(Type, -m_AppliedValue);
 
-	m_pPlayer->GetStat()->RemoveBuff(this);
-	m_pBuffIconWidget = nullptr;
+		pPlayer->GetStat()->RemoveBuff(this);
+		m_pBuffIconWidget = nullptr;
+	}
 }
 
 

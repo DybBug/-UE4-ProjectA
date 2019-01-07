@@ -16,8 +16,6 @@ class UComponent_Crafting;
 class UWidget_CraftingScreen;
 class AItem_Base;
 
-struct FCrafting_Info;
-
 UCLASS()
 class PROJECTA_API UWidget_CraftingEntry : public UUserWidget
 {
@@ -39,13 +37,13 @@ protected :
 	UPROPERTY()
 	UTextBlock* m_pDescriptionText;
 
+	UPROPERTY()
 	UWidget_CraftingScreen* m_pCraftingScreenWidget;
 
-	FCrafting_Info m_CraftingInfo;
-
+	int m_CraftingItemIndex;
 	
 public :
-	void InitWidget(const FCrafting_Info& _CraftingInfo, UWidget_CraftingScreen* _pWidget);
+	void InitWidget(int _Index, UWidget_CraftingScreen* _pWidget);
 	
 protected :
 	UFUNCTION()

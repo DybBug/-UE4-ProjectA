@@ -18,32 +18,36 @@ struct FItem_Info
 	GENERATED_BODY()
 
 public :
+	// #. 아이템 코드번호.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
+	uint8 CodeNumber = 0;
+
 	// #. 이름.
-	UPROPERTY(EditAnywhere, Category = "Item_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
 	FName Name = TEXT("#Unknown");
 
 	// #. 유형.
-	UPROPERTY(EditAnywhere, Category = "Item_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
 	EItem_Types Type = EItem_Types::None;
 
 	// #. 아이콘.
-	UPROPERTY(EditAnywhere, Category = "Item_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
 	UTexture2D* pIcon = nullptr;
 
 	// #. 설명.
-	UPROPERTY(EditAnywhere, Category = "Item_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
 	FText Description;
 
 	// #. 사용 가능?
-	UPROPERTY(EditAnywhere, Category = "Item_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
 	bool bCanUsed = false;
 
 	// #. 적재 가능?
-	UPROPERTY(EditAnywhere, Category = "Item_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
 	bool bCanStacked = false;
 
 	// #. 아이템 능력 목록.
-	UPROPERTY(EditAnywhere, Category = "Item_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item_Info")
 	TMap<EStat_Types, int> AbilityList;
 };
 
@@ -72,5 +76,7 @@ public :
 
 	/* Get */
 	FORCEINLINE const FItem_Info& GetInfo() const { return m_Info; }
-	
+
+	/* Set */
+	FORCEINLINE void SetCodeNumber(int _Number) { m_Info.CodeNumber = _Number; }
 };

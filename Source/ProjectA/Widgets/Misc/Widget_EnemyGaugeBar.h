@@ -26,6 +26,7 @@ protected :
 	UPROPERTY()
 	UProgressBar* m_pHealthBar;
 
+	UPROPERTY()
 	AEnemy_Base* m_pEnemy;
 	
 public :

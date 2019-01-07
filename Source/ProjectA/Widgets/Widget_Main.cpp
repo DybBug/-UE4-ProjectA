@@ -44,6 +44,7 @@ bool UWidget_Main::InitWidget(APlayer_Character* _pPlayer)
 	m_pHealthBarWidget->InitWidget(this);
 	m_pManaBarWidget->InitWidget(this);
 	m_pStaminaBarWidget->InitWidget(this);
+	m_pExpBarWidget->InitWidget(this);
 	m_pCompassWidget->InitWidget(this, nullptr);
 
 	return true;
@@ -90,6 +91,11 @@ void UWidget_Main::UpdateStatBar(EStat_Types _Type, float _CurrentValue, float _
 	case EStat_Types::Stamina:
 	{
 		m_pStaminaBarWidget->UpdateWidget(_CurrentValue, _MaxValue);
+		break;
+	}
+	case EStat_Types::Experience:
+	{
+		m_pExpBarWidget->UpdateWidget(_CurrentValue, _MaxValue);
 		break;
 	}
 	default: break;

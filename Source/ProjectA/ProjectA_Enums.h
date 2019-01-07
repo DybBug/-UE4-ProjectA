@@ -47,20 +47,12 @@ enum class EEquipment_Types : uint8
 };
 
 UENUM(BlueprintType)
-enum class EQuest_Categories : uint8
+enum class EEnemy_States : uint8
 {
-	Main_Quest UMETA(DisplayName = "메인 퀘스트"),
-	Sub_Quest  UMETA(DisplayName = "서브 퀘스트"),
-	Event      UMETA(DisplayName = "이벤트"),
-	Max
+	Search UMETA(DisplayName = "탐색"),
+	Follow UMETA(DisplayName = "추적"),
+	Return UMETA(DisplayName = "복귀"),
+	Attack UMETA(DisplayName = "공격"),
+	Dead   UMETA(DisplayName = "죽음")
 };
 
-UENUM(BlueprintType)
-enum class EGoal_Types : uint8
-{
-	Hunt    UMETA(DisplayName = "사냥"),
-	Collect UMETA(DisplayName = "수집"),
-	Talk    UMETA(DisplayName = "대화"),
-	Explore UMETA(DisplayName = "탐사"),
-	Max
-};

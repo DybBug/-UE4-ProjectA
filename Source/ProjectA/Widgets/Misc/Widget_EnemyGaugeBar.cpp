@@ -17,6 +17,6 @@ void UWidget_EnemyGaugeBar::InitWidget(AEnemy_Base* _pEnemy)
 void UWidget_EnemyGaugeBar::UpdateWidget()
 {
 	const FEnemy_Info& EnemyInfo = m_pEnemy->GetInfo();
-	float Percent = (EnemyInfo.CurrHealth / EnemyInfo.MaxHealth);
+	float Percent = (EnemyInfo.Health / m_pEnemy->GetMaxHealth());
 	m_pHealthBar->SetPercent(Percent);
 }

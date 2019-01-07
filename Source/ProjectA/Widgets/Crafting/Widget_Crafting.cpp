@@ -36,16 +36,16 @@ void UWidget_Crafting::GenerateEntries()
 	if (m_EntryWidgetClass)
 	{
 		UComponent_Crafting* pComp = Cast<UComponent_Crafting>(m_pComponent);
-		for (auto CraftingItem : pComp->GetCraftingItems())
+		for (int i = 0; i < pComp->GetCraftingItems().Num(); ++i)
 		{
 			UWidget_CraftingEntry* pEntryWidget = CreateWidget<UWidget_CraftingEntry>(this, m_EntryWidgetClass);
-			pEntryWidget->InitWidget(CraftingItem, m_pCraftingScreen);
+			pEntryWidget->InitWidget(i, m_pCraftingScreen);
 
-			if (CraftingItem.CraftItemClass.GetDefaultObject()->GetInfo().Type == EItem_Types::Consumables)
+			if (pComp->GetCraftingItems()[i].CraftItemClass.GetDefaultObject()->GetInfo().Type == EItem_Types::Consumables)
 			{
 				m_pConsumablesMenu->AddCraftingEntryWidget(pEntryWidget);
 			}
-			else if (CraftingItem.CraftItemClass.GetDefaultObject()->GetInfo().Type == EItem_Types::Equipment)
+			else if (pComp->GetCraftingItems()[i].CraftItemClass.GetDefaultObject()->GetInfo().Type == EItem_Types::Equipment)
 			{
 				m_pEquipmentMenu->AddCraftingEntryWidget(pEntryWidget);
 			}

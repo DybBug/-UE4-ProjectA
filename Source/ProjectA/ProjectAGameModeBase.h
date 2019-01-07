@@ -16,5 +16,5 @@ class PROJECTA_API AProjectAGameModeBase : public AGameModeBase
 	
 public :
 	AProjectAGameModeBase();
-	
+	virtual void StartPlay() override;
 };

@@ -11,6 +11,7 @@ class USphereComponent;
 class UArrowComponent;
 class UStaticMeshComponent;
 class UComponent_Pickup;
+class AItem_Base;
 
 UCLASS()
 class PROJECTA_API AChest : public AActor, public IInterface_Interaction
@@ -37,12 +38,11 @@ protected :
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UComponent_Pickup* m_pPickup;
-
 public :
 	/* Interface */
 	virtual void OnInteract(APlayer_Character* _pPlayer) override;
 	virtual void UnInteract() override;
 
-	
+	void AddItemClasses(const TMap<TSubclassOf<AItem_Base>, int>& _ItemClassList);
 	
 };

@@ -56,7 +56,7 @@ protected :
 
 	UComponent_Crafting* m_pCrafting;
 
-	FCrafting_Info m_CraftingInfo;
+	int m_CraftingItemIndex;
 
 	bool m_bIsShow;
 
@@ -65,11 +65,13 @@ public :
 	void InitWidget(UComponent_Crafting* _pComp);
 	void UpdateWidget();
 
-	void Show(const FCrafting_Info& _CraftingInfo);
+	void Show(int _Index);
 	void Hide();
 
 	/* Get */
 	FORCEINLINE const bool& GetIsShow() const { return m_bIsShow; }
+
+	FORCEINLINE UComponent_Crafting* const& GetCrafting() const { return m_pCrafting;  }
 
 protected :
 	void _SetupAbilityList();

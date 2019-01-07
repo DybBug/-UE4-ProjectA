@@ -5,7 +5,8 @@
 #include "Players/Player_Controller.h"
 
 #include <UObject/ConstructorHelpers.h>
-
+#include <Engine/World.h>
+#include <Engine/LevelStreaming.h>
 
 AProjectAGameModeBase::AProjectAGameModeBase()
 {
@@ -15,4 +16,9 @@ AProjectAGameModeBase::AProjectAGameModeBase()
 		DefaultPawnClass = BP_Player_Character.Class;
 	}
 	PlayerControllerClass = APlayer_Controller::StaticClass();
+}
+
+void AProjectAGameModeBase::StartPlay()
+{
+	Super::StartPlay();
 }

@@ -51,7 +51,8 @@ void UWidget_CraftingScreen::UpdateWidget()
 	{
 		bool bIsAmountEnough = true;
 
-		for (int i = 0; i < m_CraftingInfo.RecipeList.Num(); ++i)
+		const FCrafting_Info& CraftingInfo = m_pCrafting->GetCraftingItemAt(m_CraftingItemIndex);
+		for (int i = 0; i < CraftingInfo.RecipeList.Num(); ++i)
 		{
 			UWidget_Recipe* pRecipeWidget = Cast<UWidget_Recipe>(m_pRecipeList->GetChildAt(i));
 			pRecipeWidget->UpdateWidget();
@@ -70,15 +71,17 @@ void UWidget_CraftingScreen::UpdateWidget()
 	}
 }
 
-void UWidget_CraftingScreen::Show(const FCrafting_Info& _CraftingInfo)
+void UWidget_CraftingScreen::Show(int _Index)
 {
-	m_CraftingInfo = _CraftingInfo;
+	m_CraftingItemIndex = _Index;
 	m_bIsShow = true;
 
 	_SetupAbilityList();
 	_SetupRecipeList();
 
-	const FItem_Info& ItemInfo = m_CraftingInfo.CraftItemClass.GetDefaultObject()->GetInfo();
+	const FCrafting_Info& CraftingInfo = m_pCrafting->GetCraftingItemAt(m_CraftingItemIndex);
+	const FItem_Info& ItemInfo = CraftingInfo.CraftItemClass.GetDefaultObject()->GetInfo();
+
 	m_pIcon->SetBrushFromTexture(ItemInfo.pIcon);
 	m_pNameText->SetText(FText::FromName(ItemInfo.Name));
 
@@ -100,7 +103,10 @@ void UWidget_CraftingScreen::_SetupAbilityList()
 {
 	int Index = 0;
 	
-	for (auto Ability : m_CraftingInfo.CraftItemClass.GetDefaultObject()->GetInfo().AbilityList)
+	const FCrafting_Info& CraftingInfo = m_pCrafting->GetCraftingItemAt(m_CraftingItemIndex);
+
+	AItem_Base* pItem = CraftingInfo.CraftItemClass.GetDefaultObject();
+	for (auto Ability : pItem->GetInfo().AbilityList)
 	{
 		UTextBlock* pTextBlock = Cast<UTextBlock>(m_pAbilityList->GetChildAt(Index));
 		FString  StatStr = CONVERT_DISPLAYNAME_TO_STRING(L"EStat_Types", Ability.Key);
@@ -115,7 +121,9 @@ void UWidget_CraftingScreen::_SetupRecipeList()
 {
 	if (m_RecipeWidgetClass)
 	{
-		for (auto Recipe : m_CraftingInfo.RecipeList)
+		const FCrafting_Info& CraftingInfo = m_pCrafting->GetCraftingItemAt(m_CraftingItemIndex);
+
+		for (auto Recipe : CraftingInfo.RecipeList)
 		{
 			UWidget_Recipe* pRecipeWidget = CreateWidget<UWidget_Recipe>(GetWorld(), m_RecipeWidgetClass);
 			pRecipeWidget->InitWidget(Recipe.Key.GetDefaultObject(), Recipe.Value);
@@ -127,7 +135,7 @@ void UWidget_CraftingScreen::_SetupRecipeList()
 
 void UWidget_CraftingScreen::_OnMakingButtonClicked()
 {
-	 m_pCrafting->CreateItem(m_CraftingInfo);
+	 m_pCrafting->CreateItemAt(m_CraftingItemIndex);
 }
 
 void UWidget_CraftingScreen::_OnCancelButtonClicked()

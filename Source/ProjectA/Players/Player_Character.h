@@ -10,6 +10,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UWidget_Main;
+class UComponent_HideActor;
 class UComponent_Inventory;
 class UComponent_Equipment;
 class UComponent_Stat;
@@ -46,6 +47,9 @@ protected :
 	UCameraComponent* m_pCamera;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UComponent_HideActor* m_pHideActor;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UComponent_Inventory* m_pInventory;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -71,7 +75,7 @@ protected :
 
 	UWidget_Main* m_pMainWidget;
 
-	FRotator m_TempCameraRot;
+	bool m_bIsAttacking;
 
 	// #. ≈∏¿Ã∏”.
 	FTimerHandle m_hLockOnTimer;
@@ -113,7 +117,6 @@ public :
 
 	/* Set */
 	FORCEINLINE void SetTarget(AActor* _pTarget) { m_pTarget = _pTarget; }
-
 
 private :
 	UFUNCTION()

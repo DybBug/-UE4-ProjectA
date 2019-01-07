@@ -58,6 +58,9 @@ protected:
 	UWidget_StatBar* m_pStaminaBarWidget;
 
 	UPROPERTY()
+	UWidget_StatBar* m_pExpBarWidget;
+
+	UPROPERTY()
 	UWidget_Crafting* m_pCraftingWidget;
 
 	UPROPERTY()

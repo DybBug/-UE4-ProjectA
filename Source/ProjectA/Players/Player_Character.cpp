@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Player_Character.h"
+#include "Component_HideActor.h"
 #include "Widgets/Widget_Main.h"
 #include "Widgets/Misc/Widget_StatBar.h"
 #include "Components/Component_Inventory.h"
@@ -14,6 +15,7 @@
 #include <GameFramework/PlayerController.h>
 #include <Camera/CameraComponent.h>
 #include <TimerManager.h>
+#include <DrawDebugHelpers.h>
 #include <Engine.h>
 
 // Sets default values
@@ -35,11 +37,13 @@ APlayer_Character::APlayer_Character()
 	m_pSpringArm->bInheritPitch = true;
 	m_pSpringArm->bInheritYaw = true;
 	m_pSpringArm->bInheritRoll = false;
+	m_pSpringArm->bDoCollisionTest = false;
 	m_pSpringArm->SetupAttachment(RootComponent);
 
 	m_pCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	m_pCamera->SetupAttachment(m_pSpringArm);
 
+	m_pHideActor = CreateDefaultSubobject<UComponent_HideActor>(TEXT("HideActor"));
 	m_pInventory = CreateDefaultSubobject<UComponent_Inventory>(TEXT("Inventory"));
 	m_pEquipment = CreateDefaultSubobject<UComponent_Equipment>(TEXT("Equipment"));
 	m_pStat      = CreateDefaultSubobject<UComponent_Stat>(TEXT("Stat"));
@@ -51,6 +55,8 @@ APlayer_Character::APlayer_Character()
 void APlayer_Character::BeginPlay()
 {
 	Super::BeginPlay();
+
+	m_pHideActor->InitComponent(m_pCamera, m_pSpringArm->TargetArmLength);
 
 	if (IsValid(m_MainWidgetClass))
 	{
@@ -91,7 +97,6 @@ void APlayer_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void APlayer_Character::MoveForward(float _Value)
 {
 	AddMovementInput(GetActorForwardVector(), _Value);
-
 }
 
 void APlayer_Character::MoveRight(float _Value)
@@ -118,12 +123,6 @@ void APlayer_Character::LockOn(AActor* _pTarget)
 
 		GetWorld()->GetFirstPlayerController()->InputYawScale = 0.f;
 		GetWorld()->GetFirstPlayerController()->InputPitchScale = 0.f;
-
-		m_pSpringArm->bInheritPitch = false;
-		m_pCamera->bUsePawnControlRotation = true;
-
-		m_TempCameraRot = m_pCamera->GetRelativeTransform().GetRotation().Rotator();
-		UE_LOG(LogClass, Warning, TEXT("%f, %f, %f"), m_TempCameraRot.Pitch, m_TempCameraRot.Yaw, m_TempCameraRot.Roll);
 	}
 }
 
@@ -138,11 +137,6 @@ void APlayer_Character::LockOff()
 
 		GetWorld()->GetFirstPlayerController()->InputYawScale = 1.f;
 		GetWorld()->GetFirstPlayerController()->InputPitchScale = 1.f;
-
-		m_pSpringArm->bInheritPitch = true;
-		m_pCamera->bUsePawnControlRotation = false;
-
-		m_pCamera->SetRelativeRotation(m_TempCameraRot);
 	}
 }
 
@@ -348,6 +342,7 @@ void APlayer_Character::_LookAtTarget()
 
 	ControlRot.Yaw = YawAngle;
 	ControlRot.Pitch = PitchAngle;
+
 	GetController()->SetControlRotation(ControlRot);
 }
 

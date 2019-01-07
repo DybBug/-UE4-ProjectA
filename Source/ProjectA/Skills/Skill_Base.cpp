@@ -10,6 +10,7 @@
 #include <Animation/AnimMontage.h>
 #include <Components/TimelineComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
+#include <GameFramework/Character.h>
 
 
 // Sets default values
@@ -35,10 +36,10 @@ void ASkill_Base::BeginPlay()
 	_SetupTimelines();
 }
 
-void ASkill_Base::InitSkill(UComponent_SkillTree* _SkillTree)
+void ASkill_Base::InitSkill(UComponent_SkillTree* _SkillTree, ACharacter* _pCaster)
 {
 	m_pSkillTree = _SkillTree;
-	m_pPlayer = Cast<APlayer_Character>(m_pSkillTree->GetOwner());
+	m_pCaster = _pCaster;
 }
 
 void ASkill_Base::Use()
@@ -77,7 +78,8 @@ void ASkill_Base::AnimationStart()
 	if (m_Info.pAnimMontage)
 	{
 		m_bOnAnimation = true;
-		float Duration = m_pPlayer->PlayAnimMontage(m_Info.pAnimMontage);
+		
+		float Duration = m_pCaster->PlayAnimMontage(m_Info.pAnimMontage);
 
 		m_pAnimationTimeline->PlayFromStart();
 	}
@@ -93,6 +95,11 @@ void ASkill_Base::CooldownStart()
 {
 	m_bOnCooldown = true;
 	m_pCooldownTimeline->PlayFromStart();
+}
+
+float ASkill_Base::AnimLength()
+{
+	return m_Info.pAnimMontage->GetPlayLength();
 }
 
 void ASkill_Base::_SetupTimelines()
@@ -134,7 +141,6 @@ void ASkill_Base::_SetupTimelines()
 		m_pCooldownTimeline->SetTimelineLength(m_Info.CooldownTime);
 		m_pCooldownTimeline->SetTimelineLengthMode(ETimelineLengthMode::TL_TimelineLength);
 	}
-
 }
 
 void ASkill_Base::_AnimationFinish()
@@ -142,28 +148,35 @@ void ASkill_Base::_AnimationFinish()
 	if (m_pSkillTree)
 	{
 		m_pSkillTree->FinishSkill();
-		m_bOnAnimation = false;
 	}
+		m_bOnAnimation = false;
 }
 
 void  ASkill_Base::_CastingTick()
 {
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(m_pCaster);
+	if (pPlayer)
+	{
+		pPlayer->GetMainWidget()->GetCastingBarWidget()->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 
-	m_pPlayer->GetMainWidget()->GetCastingBarWidget()->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		float Percent = m_pCastingTimeline->GetPlaybackPosition() / m_pCastingTimeline->GetTimelineLength();
 
-	float Percent = m_pCastingTimeline->GetPlaybackPosition() / m_pCastingTimeline->GetTimelineLength();
-
-	m_pPlayer->GetMainWidget()->GetCastingBarWidget()->UpdateWidget(Percent);
+		pPlayer->GetMainWidget()->GetCastingBarWidget()->UpdateWidget(Percent);
+	}
 }
 
 void  ASkill_Base::_CastingFinish()
 {
-	m_bOnCasting = false;
+	APlayer_Character* pPlayer = Cast<APlayer_Character>(m_pCaster);
+	if (pPlayer)
+	{
+		m_bOnCasting = false;
 
-	m_pPlayer->GetMainWidget()->GetCastingBarWidget()->SetVisibility(ESlateVisibility::Hidden);
-	m_pPlayer->GetMainWidget()->GetCastingBarWidget()->UpdateWidget(0.f);
+		pPlayer->GetMainWidget()->GetCastingBarWidget()->SetVisibility(ESlateVisibility::Hidden);
+		pPlayer->GetMainWidget()->GetCastingBarWidget()->UpdateWidget(0.f);
 
-	CooldownStart();
+		CooldownStart();
+	}
 }
 
 void  ASkill_Base::_CooldownTick()

@@ -84,3 +84,10 @@ void UComponent_Pickup::RemoveItemAtIndex(int _Index, int _RemoveAmount)
 	return;
 }
 
+
+void UComponent_Pickup::AddItemClass(const TSubclassOf<AItem_Base>& _ItemClass, int _Amount)
+{
+	m_Items.AddUnique(FPickupSlot_Info(_ItemClass, _Amount));
+	m_PickupItemCount = m_Items.Num();
+}
+

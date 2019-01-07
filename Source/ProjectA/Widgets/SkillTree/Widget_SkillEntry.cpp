@@ -100,8 +100,10 @@ void UWidget_SkillEntry::_Learning()
 {
 	if (!m_pSkill)
 	{
-		m_pSkill = GetWorld()->SpawnActor<ASkill_Base>(m_SkillClass);
-		m_pSkill->InitSkill(m_pSkillTree);
+		AActor* pOwner = m_pSkillTree->GetOwner();
+		ACharacter* pPlayer = Cast<ACharacter>(pOwner);
+		m_pSkill = GetWorld()->SpawnActor<ASkill_Base>(m_SkillClass);		
+		m_pSkill->InitSkill(m_pSkillTree, pPlayer);
 		m_pSkill->Upgrade();
 
 		int SkillLevel = m_pSkill->GetInfo().CurrentLevel;

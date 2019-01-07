@@ -9,7 +9,7 @@
 /**
  * 
  */
-class UManager_AttackAnimMontages;
+class UManager_Item;
 
 UCLASS()
 class PROJECTA_API UManager_Master : public UGameInstance
@@ -21,7 +21,10 @@ public :
 
 protected :
 	UPROPERTY()
-	UManager_AttackAnimMontages* m_pAttackAnimMontagesManager;
+	UManager_Item* m_pItemManager;
+
+public :
+	const UManager_Item* const& GetItemManager() const { return m_pItemManager;  }
 	
 	
 };

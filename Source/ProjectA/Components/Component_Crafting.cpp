@@ -37,9 +37,9 @@ void UComponent_Crafting::UpdateComponent()
 	m_pWidget->UpdateWidget();
 }
 
-bool UComponent_Crafting::CreateItem(const FCrafting_Info& _Crafting_Info)
+bool UComponent_Crafting::CreateItemAt(int _Index)
 {
-	AItem_Base* pItem = GetWorld()->SpawnActor<AItem_Base>(_Crafting_Info.CraftItemClass);
+	AItem_Base* pItem = GetWorld()->SpawnActor<AItem_Base>(m_CraftingItems[_Index].CraftItemClass);
 	APlayer_Character* pPlayer = Cast<APlayer_Character>(GetOwner());
 	int Rest = pPlayer->GetInventory()->AddItem(pItem, 1);
 
@@ -47,7 +47,7 @@ bool UComponent_Crafting::CreateItem(const FCrafting_Info& _Crafting_Info)
 
 	if (!Rest)
 	{
-		for (auto Recipe : _Crafting_Info.RecipeList)
+		for (auto Recipe : m_CraftingItems[_Index].RecipeList)
 		{
 			TArray<int> SlotIndices = pPlayer->GetInventory()->GetSlotIndicesWithItem(Recipe.Key);
 

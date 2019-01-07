@@ -32,6 +32,9 @@ protected :
 	UPROPERTY(EditAnywhere, Category = "Configuration")
 	FLinearColor m_FillColor;
 
+	UPROPERTY(EditAnywhere, Category = "Configuration")
+	bool m_bVisibleText;
+
 	//
 	//
 	//

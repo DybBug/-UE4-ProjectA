@@ -10,6 +10,10 @@
 void UWidget_StatBar::NativePreConstruct()
 {
 	m_pStatBar->SetFillColorAndOpacity(m_FillColor);
+	m_bVisibleText ?
+		m_pStatText->SetVisibility(ESlateVisibility::SelfHitTestInvisible) :
+		m_pStatText->SetVisibility(ESlateVisibility::Hidden);
+	
 }
 
 
@@ -23,8 +27,16 @@ void UWidget_StatBar::UpdateWidget(int _CurrValue, int _MaxValue)
 	float Percent = ((float)_CurrValue / (float)_MaxValue);
 	m_pStatBar->SetPercent(Percent);
 
-	FText Format = FText::Format(LOCTEXT("Format", "{0}/{1}"), _CurrValue, _MaxValue);
-	m_pStatText->SetText(Format);
+	if (m_bVisibleText)
+	{
+		m_pStatText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		FText Format = FText::Format(LOCTEXT("Format", "{0}/{1}"), _CurrValue, _MaxValue);
+		m_pStatText->SetText(Format);
+	}
+	else
+	{
+		m_pStatText->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 #undef LOCTEXT_NAMESPACE

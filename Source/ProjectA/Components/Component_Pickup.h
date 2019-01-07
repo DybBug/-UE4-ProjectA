@@ -21,6 +21,11 @@ struct FPickupSlot_Info
 	FPickupSlot_Info(TSubclassOf<AItem_Base> _pItemClass, int _Amount)
 		: ItemClass(_pItemClass), Amount(_Amount) {}
 
+	bool operator==(const FPickupSlot_Info& _rhs) const
+	{
+		return (this->ItemClass == _rhs.ItemClass) && (this->Amount == _rhs.Amount);
+	}
+
 public :
 	UPROPERTY(EditAnywhere, Category = "Pickup_Info")
 	TSubclassOf<AItem_Base> ItemClass;
@@ -60,5 +65,7 @@ public :
 	int ItemCount();
 
 	void RemoveItemAtIndex(int _Index, int _RemoveAmount);
+
+	void AddItemClass(const TSubclassOf<AItem_Base>& _ItemClass, int _Amount);
 
 };

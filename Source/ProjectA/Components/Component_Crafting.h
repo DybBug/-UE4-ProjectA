@@ -18,11 +18,11 @@ struct FCrafting_Info
 
 public :
 	// #. 제작 아이템.
-	UPROPERTY(EditAnywhere, Category = "Crafting_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crafting_Info")
 	TSubclassOf<AItem_Base> CraftItemClass;
 
 	// #. 아이템 재료 목록
-	UPROPERTY(EditAnywhere, Category = "Crafting_Info")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crafting_Info")
 	TMap<TSubclassOf<AItem_Base>, int> RecipeList;
 };
 
@@ -41,16 +41,17 @@ protected:
 
 protected :
 	UPROPERTY(EditAnywhere, Category = "Configuration")
-	TArray<FCrafting_Info> m_pCraftingItems;
+	TArray<FCrafting_Info> m_CraftingItems;
 
 public :
 	virtual void InitComponent(UWidget_Base* _pWidget) override;
 	virtual void UpdateComponent() override;
 
-	bool CreateItem(const FCrafting_Info& _Crafting_Info);
+	bool CreateItemAt(int _Index);
 
 	/* Get */
-	FORCEINLINE const TArray<FCrafting_Info>& GetCraftingItems() const { return m_pCraftingItems; }
+	FORCEINLINE const TArray<FCrafting_Info>& GetCraftingItems() const { return m_CraftingItems; }
+	FORCEINLINE const FCrafting_Info& GetCraftingItemAt(int _Index) const { return m_CraftingItems[_Index]; }
 
 };
 

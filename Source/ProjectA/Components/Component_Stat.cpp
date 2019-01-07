@@ -46,6 +46,7 @@ void UComponent_Stat::InitComponent(UWidget_Base* _pWidget)
 	pPlayer->GetMainWidget()->UpdateStatBar(EStat_Types::Health, m_Stats[EStat_Types::Health].CurrentValue, m_Stats[EStat_Types::Health].MaxValue);
 	pPlayer->GetMainWidget()->UpdateStatBar(EStat_Types::Mana, m_Stats[EStat_Types::Mana].CurrentValue, m_Stats[EStat_Types::Mana].MaxValue);
 	pPlayer->GetMainWidget()->UpdateStatBar(EStat_Types::Stamina, m_Stats[EStat_Types::Stamina].CurrentValue, m_Stats[EStat_Types::Stamina].MaxValue);
+	pPlayer->GetMainWidget()->UpdateStatBar(EStat_Types::Experience, m_Stats[EStat_Types::Experience].CurrentValue, m_Stats[EStat_Types::Experience].MaxValue);
 	Cast<UWidget_Stat>(m_pWidget)->GenerateStatEntries();
 }
 

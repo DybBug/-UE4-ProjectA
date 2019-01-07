@@ -5,12 +5,13 @@
 #include "Widgets/Widget_Main.h"
 #include "Widgets/Pickup/Widget_Pickup.h"
 #include "Players/Player_Character.h"
+#include "Items/Item_Base.h"
 
 #include <Components/SphereComponent.h>
 #include <Components/ArrowComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Kismet/GameplayStatics.h>
-
+#include <UObject/ConstructorHelpers.h>
 
 // Sets default values
 AChest::AChest()
@@ -31,6 +32,12 @@ AChest::AChest()
 	m_pMesh->SetupAttachment(RootComponent);
 
 	m_pPickup = CreateDefaultSubobject<UComponent_Pickup>(TEXT("Pickup"));
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Chest(TEXT("StaticMesh'/Game/03_Resources/Meshes/Chest/SM_Chest.SM_Chest'"));
+	if (SM_Chest.Succeeded())
+	{
+		m_pMesh->SetStaticMesh(SM_Chest.Object);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -40,27 +47,27 @@ void AChest::BeginPlay()
 
 }
 
-void AChest::OnInteract(APlayer_Character* _pPlayer)
+void AChest::OnInteract(APlayer_Character* _pUser)
 {
-	if (_pPlayer->GetTarget() && _pPlayer->GetTarget() != this)
+	if (_pUser->GetTarget() && _pUser->GetTarget() != this)
 	{
-		Cast<IInterface_Interaction>(_pPlayer->GetTarget())->UnInteract();
+		Cast<IInterface_Interaction>(_pUser->GetTarget())->UnInteract();
 	}
 
 	if (!m_pPickup->GetIsOpen())
 	{
-		m_pPlayer = _pPlayer;
+		SetInteractionUser(_pUser);
 
-		if (m_pPlayer->GetTarget() && (m_pPlayer->GetTarget() != this))
+		if (GetInteractionUser()->GetTarget() && (GetInteractionUser()->GetTarget() != this))
 		{
-			if (IInterface_Interaction* pInteraction = Cast<IInterface_Interaction>(m_pPlayer->GetTarget()))
+			if (IInterface_Interaction* pInteraction = Cast<IInterface_Interaction>(GetInteractionUser()->GetTarget()))
 			{
 				pInteraction->UnInteract();
-				m_pPlayer->SetTarget(nullptr);
+				GetInteractionUser()->SetTarget(nullptr);
 			}
 		}
-		m_pPlayer->SetTarget(this);
-		UWidget_Base* pWidget = m_pPlayer->GetMainWidget()->GetPickupWidget();
+		GetInteractionUser()->SetTarget(this);
+		UWidget_Base* pWidget = GetInteractionUser()->GetMainWidget()->GetPickupWidget();
 		m_pPickup->InitComponent(pWidget);
 		m_pPickup->Open();
 	}
@@ -70,9 +77,17 @@ void AChest::UnInteract()
 {
 	if (m_pPickup->GetIsOpen())
 	{
-		m_pPlayer->SetTarget(nullptr);
-		m_pPlayer = nullptr;
+		GetInteractionUser()->SetTarget(nullptr);
+		SetInteractionUser(nullptr);
 		m_pPickup->Close();
+	}
+}
+
+void AChest::AddItemClasses(const TMap<TSubclassOf<AItem_Base>, int>& _ItemClassList)
+{
+	for (auto& ItemClass : _ItemClassList)
+	{
+		m_pPickup->AddItemClass(ItemClass.Key, ItemClass.Value);
 	}
 }
 
